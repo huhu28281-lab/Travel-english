@@ -14,7 +14,7 @@ const config={
   compatibility_flags:["nodejs_compat"],
   workers_dev:true,
   preview_urls:false,
-  assets:{binding:"ASSETS",run_worker_first:true},
+  assets:{binding:"ASSETS",run_worker_first:["/api/*"]},
   d1_databases:[{binding:"DB",database_name:"travel-english-db",database_id:databaseId,migrations_dir:"drizzle"}],
   observability:{enabled:true},
 };
