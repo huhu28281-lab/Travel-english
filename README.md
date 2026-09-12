@@ -14,8 +14,10 @@
 ### 직접 Cloudflare Workers 배포
 
 - 별도 Worker 이름은 `travel-english`, 별도 D1 이름은 `travel-english-db`입니다. 기존 morning-english Worker와 DB를 변경하지 않습니다.
-- 실제 새 D1 ID를 빌드 환경의 `CF_D1_DATABASE_ID`에 설정한 뒤 `pnpm run build:cloudflare`로 빌드합니다. 로그인·Access·AI 환경변수는 필요하지 않습니다.
+- 여행 앱 D1 ID `76b85945-6d97-4c23-9939-41c2a5e630f9`가 기본 설정에 반영되어 있습니다. `pnpm run build:cloudflare`로 빌드하며, 다른 데이터베이스를 사용할 때만 빌드 환경의 `CF_D1_DATABASE_ID`로 덮어씁니다. 로그인·Access·AI 환경변수는 필요하지 않습니다.
 - 배포 전 `wrangler d1 migrations apply DB --remote --config .cloudflare-deploy.json`로 이 앱의 마이그레이션을 적용하고 `wrangler deploy --config dist/server/wrangler.json`으로 배포합니다. Workers Builds 환경에서는 빌드 스크립트가 마이그레이션을 적용합니다.
+- Cloudflare의 Git 연결에서 저장소 `huhu28281-lab/Travel-english`, 브랜치 `main`, Worker 이름 `travel-english`를 선택합니다. 빌드 명령은 `npm run build:cloudflare`, 배포 명령은 `npx wrangler deploy --config dist/server/wrangler.json`, 루트 디렉터리는 저장소 최상위(`/`)로 설정합니다.
+- Workers Builds의 빌드용 API 토큰에는 마이그레이션 적용을 위한 **Account → D1 → Edit** 권한이 필요합니다. 자동 생성 토큰에 이 권한이 없다면 Cloudflare의 **My Profile → API Tokens**에서 해당 빌드 토큰에 추가합니다. 토큰 값은 코드나 저장소에 넣지 않습니다.
 - 직접 배포 진입점은 외부에서 전달한 Sites 사용자 헤더를 제거하고 익명 방문자 세션으로만 기록을 구분합니다.
 - `node scripts/cloudflare-config.mjs --check`는 실제 DB와 연결하지 않는 빌드 확인용입니다. 확인용 결과물로 배포하지 말고 실제 DB ID로 다시 빌드해야 합니다.
 
