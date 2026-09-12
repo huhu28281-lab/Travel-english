@@ -96,18 +96,18 @@ export function useSpeech(rate: number) {
     if (listening) { stop(); return; }
     stop(); setMessage("");
     const w = window as SpeechWindow; const Constructor = w.SpeechRecognition || w.webkitSpeechRecognition;
-    if (!Constructor) { setMessage("이 브라우저에서는 음성 인식을 쓸 수 없어요. 아래에 문장을 입력해 연습하세요."); return; }
+    if (!Constructor) { setMessage("이 브라우저에서는 음성 인식을 쓸 수 없어요. 문장을 듣고 소리 내어 따라 해보세요."); return; }
     const rec = new Constructor(); recognition.current = rec;
     rec.lang = "en-US"; rec.continuous = false; rec.interimResults = false;
     let gotResult = false; let hadError = false;
     rec.onresult = e => { gotResult = true; onText(e.results[0][0].transcript); };
     rec.onerror = e => {
       hadError = true;
-      const errors: Record<string,string> = { "not-allowed":"마이크 권한이 필요해요. 브라우저 설정에서 허용하거나 문장을 직접 입력해 주세요.", "audio-capture":"마이크를 찾을 수 없어요. 연결을 확인하거나 직접 입력해 주세요.", "network":"음성 인식에 연결하지 못했어요. 인터넷 연결을 확인하거나 직접 입력해 주세요.", "no-speech":"말소리가 들리지 않았어요. 다시 말하거나 문장을 입력해 주세요." };
-      setMessage(errors[e.error] || "음성을 인식하지 못했어요. 다시 시도하거나 문장을 직접 입력해 주세요.");
+      const errors: Record<string,string> = { "not-allowed":"마이크 권한이 필요해요. 브라우저 설정에서 마이크를 허용한 뒤 다시 시도해 주세요.", "audio-capture":"마이크를 찾을 수 없어요. 연결을 확인한 뒤 다시 시도해 주세요.", "network":"음성 인식에 연결하지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.", "no-speech":"말소리가 들리지 않았어요. 마이크를 누르고 다시 말해 주세요." };
+      setMessage(errors[e.error] || "음성을 인식하지 못했어요. 마이크를 누르고 다시 말해 주세요.");
     };
-    rec.onend = () => { active.current = false; setListening(false); recognition.current = null; if (!gotResult && !hadError) setMessage("인식한 문장이 없어요. 다시 말하거나 직접 입력해 주세요."); };
-    try { active.current = true; setListening(true); rec.start(); } catch { stop(); setMessage("마이크를 시작하지 못했어요. 문장을 직접 입력해 연습할 수 있어요."); }
+    rec.onend = () => { active.current = false; setListening(false); recognition.current = null; if (!gotResult && !hadError) setMessage("인식한 문장이 없어요. 마이크를 누르고 다시 말해 주세요."); };
+    try { active.current = true; setListening(true); rec.start(); } catch { stop(); setMessage("마이크를 시작하지 못했어요. 마이크 권한과 연결 상태를 확인한 뒤 다시 시도해 주세요."); }
   }, [listening, stop]);
 
   return { supported, micSupported, speaking, listening, activeIndex, message, setMessage, play, stop, recognize };

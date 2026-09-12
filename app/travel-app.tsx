@@ -244,7 +244,7 @@ export default function TravelApp() {
     if (correct) markAnswered();
   };
   const receiveSpeech = (text: string) => {
-    if (level === "work") { setEntry(previous => previous.trim() ? previous.trim() + " " + text : text); setFeedback(null); }
+    if (level === "work" && stage !== 2) { setEntry(previous => previous.trim() ? previous.trim() + " " + text : text); setFeedback(null); }
     else { setEntry(text); checkEntry(text); }
   };
   const chooseAnswer = (answer: string) => {
@@ -321,7 +321,7 @@ export default function TravelApp() {
       <div className="level-bar"><div><span className="level-label">학습 난도</span><Select value={level} onValueChange={changeLevel} disabled={navigationDisabled}><SelectTrigger className="level-select" aria-label="영어 학습 난도 선택"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="work">여행 실전 · 두세 문장으로 답하기</SelectItem><SelectItem value="basics">여행 기초 · 짧은 표현부터</SelectItem></SelectContent></Select></div><p>{level === "work" ? "짧은 문장을 연결해 이유를 설명하고, 요청하고, 다시 질문해보세요." : "공항·호텔·식당에서 바로 쓸 표현부터 연습하세요."}</p></div>
       <TabsContent value="today" id="study-main">
         <div className="page-heading today-heading"><div className="today-intro"><DancingChick key={day} day={dayNumber(day)}/><div><p className="eyebrow">READY FOR YOUR NEXT TRIP</p><h1>{studyTitle}</h1><p className="heading-sub">{weekend?`${lessonDateLabel} 수업부터 다시 연습해요. 다른 날짜도 골라보세요.`:level === "work" ? "상황을 듣고, 내 말로 답해보세요." : "짧은 문장부터 차근차근 연습해보세요."}</p></div></div><div className="today-progress"><span className="progress-kicker">{lessonDateLabel}</span><strong>{loading || loadError ? "—" : done.length}<span> / 6</span></strong><span>이번 수업 완료 단계</span><Progress value={done.length/6*100} aria-label="이번 수업 완료 단계"/></div></div>
-        <div className="study-toolbar"><div className="study-focus"><span className="focus-icon"><Headphones size={19}/></span><div><strong>지금은, {stages[stage].title}</strong><span>한 단계 권장 10분 · 표현 5개</span></div></div><div className="quiet-control"><label htmlFor="quiet-mode">입력으로 연습</label><Switch id="quiet-mode" checked={quiet} onCheckedChange={v=>preference("quiet",v)}/></div></div>
+        <div className="study-toolbar"><div className="study-focus"><span className="focus-icon"><Headphones size={19}/></span><div><strong>지금은, {stages[stage].title}</strong><span>한 단계 권장 10분 · 표현 5개</span></div></div>{stage!==2 && <div className="quiet-control"><label htmlFor="quiet-mode">입력으로 연습</label><Switch id="quiet-mode" checked={quiet} onCheckedChange={v=>preference("quiet",v)}/></div>}</div>
         {loadError && <div className="status-banner error" role="alert"><span>{loadError} 학습은 계속할 수 있어요.</span><button onClick={()=>void load(false)}>다시 불러오기</button></div>}
         <div className="learning-grid">
           <div className="learning-column">
@@ -338,7 +338,12 @@ export default function TravelApp() {
                 {(stage===3 || stage===4 || stage===5) && <div className="question"><span className="speaker-label">이렇게 말해보세요</span><p>{level === "work" ? stage === 4 ? phrase.variation?.task : stage === 5 && !questionShown ? "들은 질문에 두세 문장으로 답하세요. 이유나 다음 행동을 덧붙여보세요." : phrase.task : phrase.ko}</p></div>}
                 {stage===0 && <div className="listen-actions"><button className="primary-button" onClick={()=>playDialogue(false)}>{speech.speaking ? <Square size={19}/> : <Play size={19} fill="currentColor"/>}{speech.speaking ? "재생 멈추기" : "대화 듣기"}</button><button className="text-button" onClick={()=>playDialogue(true)}><RotateCcw size={17}/> 10분 반복 듣기</button></div>}
                 {(stage===1 || stage===2) && <div className="listen-actions"><button className="primary-button" onClick={speech.speaking ? speech.stop : playPhrase}>{speech.speaking ? <Square size={19}/> : <Volume2 size={19}/>}{speech.speaking ? "재생 멈추기" : "문장 듣기"}</button>{stage===2 && <button className="text-button" onClick={()=>speech.play(Array.from({length:3},()=>speechLines(phrase.en)).flat(),{gap:4500})}><RotateCcw size={17}/> 따라 할 틈을 두고 3번</button>}</div>}
-                {((stage===2) || (stage===3 && !quiet) || isOpenPractice) && <div className="speaking-practice">
+                {stage===2 && <div className="speaking-practice">
+                  <button className={`mic-button ${speech.listening ? "listening" : ""}`} onClick={()=>speech.recognize(receiveSpeech)} disabled={!speech.micSupported}><Mic size={20}/>{speech.listening ? "말하기 마치기" : "마이크로 따라 말하기"}</button>
+                  <p className="micro-note">{speech.micSupported ? "음성 인식 시 브라우저 제공자에게 음성이 전송될 수 있습니다." : "이 브라우저에서는 음성 인식을 지원하지 않아요. 문장을 듣고 소리 내어 따라 해보세요."}</p>
+                  {entry && <div className="example-answer" aria-live="polite"><span>인식된 문장</span><p lang="en">{entry}</p></div>}
+                </div>}
+                {((stage===3 && !quiet) || isOpenPractice) && <div className="speaking-practice">
                   {!quiet && <><button className={`mic-button ${speech.listening ? "listening" : ""}`} onClick={()=>speech.recognize(receiveSpeech)} disabled={!speech.micSupported}><Mic size={20}/>{speech.listening ? "입력 마치기" : speech.micSupported ? level === "work" ? "음성 입력" : "음성 입력" : "이 브라우저는 직접 입력으로 연습"}</button><p className="micro-note">음성 입력 시 브라우저 제공자에게 음성이 전송될 수 있습니다.</p></>}
                   <label className="input-label" htmlFor="sentence-entry"><Keyboard size={16}/>나의 답변</label>
                   <form className={`answer-form ${level === "work" ? "long-answer-form" : ""}`} onSubmit={e=>{e.preventDefault();checkEntry();}}>{level === "work" ? <Textarea id="sentence-entry" value={entry} onChange={e=>{setEntry(e.target.value);setFeedback(null);}} lang="en" autoComplete="off" autoCapitalize="sentences" spellCheck={false} placeholder="답변 → 이유나 세부 내용 → 질문 또는 다음 행동" maxLength={700} rows={4}/> : <input id="sentence-entry" value={entry} onChange={e=>{setEntry(e.target.value);setFeedback(null);}} lang="en" autoComplete="off" autoCapitalize="sentences" placeholder="영어 문장 입력" maxLength={200}/>}<button type="submit" className="secondary-button">{level === "work" ? "예시와 비교" : "확인"}</button></form>
