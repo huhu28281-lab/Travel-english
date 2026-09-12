@@ -1,0 +1,1162 @@
+[
+  {
+    "title": "공항에서 체크인하기",
+    "label": "공항 · 출발",
+    "scene": "항공사 카운터에 도착했어요. 체크인하고 좌석과 수하물을 확인해보세요.",
+    "tip": "I’d like to 뒤에 하고 싶은 행동을 넣으면 정중하게 요청할 수 있어요.",
+    "rows": [
+      {
+        "en": "I'd like to check in, please.",
+        "ko": "체크인하고 싶어요.",
+        "cue": "How can I help you?",
+        "cueKo": "무엇을 도와드릴까요?",
+        "word": "check in",
+        "wordKo": "체크인하다",
+        "extra": "Here is my passport.",
+        "extraKo": "여권 여기 있어요."
+      },
+      {
+        "en": "Here is my passport.",
+        "ko": "여권 여기 있어요.",
+        "cue": "May I see your passport?",
+        "cueKo": "여권을 보여주시겠어요?",
+        "word": "passport",
+        "wordKo": "여권",
+        "extra": "I have a reservation.",
+        "extraKo": "예약했어요."
+      },
+      {
+        "en": "Could I have a window seat?",
+        "ko": "창가 좌석으로 받을 수 있을까요?",
+        "cue": "Do you have a seat preference?",
+        "cueKo": "원하시는 좌석이 있나요?",
+        "word": "window seat",
+        "wordKo": "창가 좌석",
+        "extra": "An aisle seat is also fine.",
+        "extraKo": "복도 좌석도 괜찮아요."
+      },
+      {
+        "en": "I have one bag to check.",
+        "ko": "부칠 가방이 하나 있어요.",
+        "cue": "Are you checking any bags?",
+        "cueKo": "부칠 짐이 있나요?",
+        "word": "check a bag",
+        "wordKo": "짐을 부치다",
+        "extra": "This small bag is my carry-on.",
+        "extraKo": "이 작은 가방은 기내에 가지고 탈 거예요."
+      },
+      {
+        "en": "What time does boarding start?",
+        "ko": "탑승은 몇 시에 시작하나요?",
+        "cue": "Here is your boarding pass.",
+        "cueKo": "탑승권 여기 있습니다.",
+        "word": "boarding pass",
+        "wordKo": "탑승권",
+        "extra": "And which gate should I go to?",
+        "extraKo": "그리고 어느 탑승구로 가면 되나요?"
+      }
+    ]
+  },
+  {
+    "title": "택시 타고 호텔 가기",
+    "label": "교통 · 택시",
+    "scene": "공항에서 택시를 탔어요. 목적지를 보여주고 요금과 결제를 물어보세요.",
+    "tip": "How much는 금액, How long은 걸리는 시간을 물을 때 써요.",
+    "rows": [
+      {
+        "en": "Could you take me to this hotel?",
+        "ko": "이 호텔로 데려다주시겠어요?",
+        "cue": "Where would you like to go?",
+        "cueKo": "어디로 가시겠어요?",
+        "word": "hotel",
+        "wordKo": "호텔",
+        "extra": "Here is the address.",
+        "extraKo": "주소 여기 있어요."
+      },
+      {
+        "en": "Here is the address.",
+        "ko": "주소 여기 있어요.",
+        "cue": "Do you have the address?",
+        "cueKo": "주소를 가지고 계신가요?",
+        "word": "address",
+        "wordKo": "주소",
+        "extra": "Could you check it, please?",
+        "extraKo": "확인해 주시겠어요?"
+      },
+      {
+        "en": "How much will it cost?",
+        "ko": "요금이 얼마나 나올까요?",
+        "cue": "We can leave now.",
+        "cueKo": "지금 출발할 수 있어요.",
+        "word": "cost",
+        "wordKo": "비용이 들다",
+        "extra": "Is there an extra fee for luggage?",
+        "extraKo": "짐에 추가 요금이 있나요?"
+      },
+      {
+        "en": "How long will it take?",
+        "ko": "시간은 얼마나 걸리나요?",
+        "cue": "There is some traffic today.",
+        "cueKo": "오늘 차가 좀 막혀요.",
+        "word": "traffic",
+        "wordKo": "교통 정체",
+        "extra": "I'm not in a hurry.",
+        "extraKo": "급하지는 않아요."
+      },
+      {
+        "en": "Can I pay by card?",
+        "ko": "카드로 결제할 수 있나요?",
+        "cue": "We have arrived.",
+        "cueKo": "도착했습니다.",
+        "word": "pay by card",
+        "wordKo": "카드로 결제하다",
+        "extra": "Could I have a receipt, please?",
+        "extraKo": "영수증도 주시겠어요?"
+      }
+    ]
+  },
+  {
+    "title": "호텔에서 체크인하기",
+    "label": "숙소 · 체크인",
+    "scene": "호텔 프런트에서 예약을 확인하고 필요한 정보를 물어보세요.",
+    "tip": "under the name은 예약한 이름을 말할 때 쓰는 표현이에요.",
+    "rows": [
+      {
+        "en": "I have a reservation under the name Alex Kim.",
+        "ko": "Alex Kim이라는 이름으로 예약했어요.",
+        "cue": "Welcome. Do you have a reservation?",
+        "cueKo": "어서 오세요. 예약하셨나요?",
+        "word": "reservation",
+        "wordKo": "예약",
+        "extra": "I'd like to check in.",
+        "extraKo": "체크인하고 싶어요."
+      },
+      {
+        "en": "Could I check in now?",
+        "ko": "지금 체크인할 수 있을까요?",
+        "cue": "You have arrived a little early.",
+        "cueKo": "조금 일찍 도착하셨네요.",
+        "word": "early",
+        "wordKo": "일찍",
+        "extra": "I can wait if the room isn't ready.",
+        "extraKo": "객실이 준비되지 않았다면 기다릴 수 있어요."
+      },
+      {
+        "en": "Is breakfast included?",
+        "ko": "조식이 포함되어 있나요?",
+        "cue": "Here is your room key.",
+        "cueKo": "객실 키 여기 있습니다.",
+        "word": "breakfast",
+        "wordKo": "아침 식사",
+        "extra": "What time does it start?",
+        "extraKo": "몇 시에 시작하나요?"
+      },
+      {
+        "en": "What is the Wi-Fi password?",
+        "ko": "와이파이 비밀번호가 뭔가요?",
+        "cue": "Do you need anything else?",
+        "cueKo": "더 필요한 것이 있나요?",
+        "word": "password",
+        "wordKo": "비밀번호",
+        "extra": "Could you write it down?",
+        "extraKo": "적어 주시겠어요?"
+      },
+      {
+        "en": "What time is check-out?",
+        "ko": "체크아웃은 몇 시인가요?",
+        "cue": "Enjoy your stay.",
+        "cueKo": "편안히 머무세요.",
+        "word": "check-out",
+        "wordKo": "체크아웃",
+        "extra": "I'd like to plan my morning.",
+        "extraKo": "아침 일정을 정하고 싶어요."
+      }
+    ]
+  },
+  {
+    "title": "식당에서 주문하기",
+    "label": "식사 · 레스토랑",
+    "scene": "식당에 들어가 자리를 안내받고 원하는 음식을 주문해보세요.",
+    "tip": "Could I have와 I’d like는 식당에서 주문할 때 쓰기 좋아요.",
+    "rows": [
+      {
+        "en": "A table for two, please.",
+        "ko": "두 명 자리 부탁드려요.",
+        "cue": "How many people?",
+        "cueKo": "몇 분이세요?",
+        "word": "a table for two",
+        "wordKo": "두 사람 자리",
+        "extra": "We don't have a reservation.",
+        "extraKo": "예약은 안 했어요."
+      },
+      {
+        "en": "Could I have the menu, please?",
+        "ko": "메뉴를 주시겠어요?",
+        "cue": "Please have a seat.",
+        "cueKo": "앉으세요.",
+        "word": "menu",
+        "wordKo": "메뉴",
+        "extra": "I'd like a little time to choose.",
+        "extraKo": "고를 시간을 조금 갖고 싶어요."
+      },
+      {
+        "en": "What do you recommend?",
+        "ko": "무엇을 추천하시나요?",
+        "cue": "Are you ready to order?",
+        "cueKo": "주문하시겠어요?",
+        "word": "recommend",
+        "wordKo": "추천하다",
+        "extra": "I'd like to try something local.",
+        "extraKo": "현지 음식을 먹어보고 싶어요."
+      },
+      {
+        "en": "I'd like this one, please.",
+        "ko": "이걸로 주세요.",
+        "cue": "What would you like?",
+        "cueKo": "무엇을 드시겠어요?",
+        "word": "order",
+        "wordKo": "주문하다",
+        "extra": "And some water, please.",
+        "extraKo": "그리고 물도 주세요."
+      },
+      {
+        "en": "Could we have the bill, please?",
+        "ko": "계산서 주시겠어요?",
+        "cue": "Would you like anything else?",
+        "cueKo": "더 필요한 것이 있나요?",
+        "word": "bill",
+        "wordKo": "계산서",
+        "extra": "The food was lovely.",
+        "extraKo": "음식이 정말 맛있었어요."
+      }
+    ]
+  },
+  {
+    "title": "길을 물어보기",
+    "label": "관광 · 길 찾기",
+    "scene": "지도만으로 길을 찾기 어려워요. 지나가는 사람에게 정중하게 물어보세요.",
+    "tip": "Excuse me로 말을 건네고 Where is로 장소를 물어보세요.",
+    "rows": [
+      {
+        "en": "Excuse me. Where is the station?",
+        "ko": "실례합니다. 역이 어디인가요?",
+        "cue": "Hello. Do you need help?",
+        "cueKo": "안녕하세요. 도움이 필요하세요?",
+        "word": "station",
+        "wordKo": "역",
+        "extra": "I can't find it on this map.",
+        "extraKo": "이 지도에서 찾을 수가 없어요."
+      },
+      {
+        "en": "Is it far from here?",
+        "ko": "여기서 먼가요?",
+        "cue": "The station is near the park.",
+        "cueKo": "역은 공원 근처에 있어요.",
+        "word": "far",
+        "wordKo": "먼",
+        "extra": "Can I walk there?",
+        "extraKo": "걸어갈 수 있나요?"
+      },
+      {
+        "en": "Should I turn left here?",
+        "ko": "여기서 왼쪽으로 돌아야 하나요?",
+        "cue": "Go straight and turn at the corner.",
+        "cueKo": "직진해서 모퉁이에서 도세요.",
+        "word": "turn left",
+        "wordKo": "왼쪽으로 돌다",
+        "extra": "I want to make sure.",
+        "extraKo": "확실히 알고 싶어요."
+      },
+      {
+        "en": "Could you show me on the map?",
+        "ko": "지도에서 보여주시겠어요?",
+        "cue": "It is behind the museum.",
+        "cueKo": "박물관 뒤에 있어요.",
+        "word": "map",
+        "wordKo": "지도",
+        "extra": "I'm not sure where that is.",
+        "extraKo": "그곳이 어디인지 잘 모르겠어요."
+      },
+      {
+        "en": "Could you say that again, please?",
+        "ko": "다시 말씀해 주시겠어요?",
+        "cue": "Take the second street on your right.",
+        "cueKo": "오른쪽 두 번째 길로 가세요.",
+        "word": "again",
+        "wordKo": "다시",
+        "extra": "A little more slowly, please.",
+        "extraKo": "조금 더 천천히 부탁드려요."
+      }
+    ]
+  },
+  {
+    "title": "도착 후 입국 질문에 답하기",
+    "label": "공항 · 도착",
+    "scene": "여행 상황을 가정한 연습이에요. 실제 질문에는 자신의 일정에 맞게 답하세요.",
+    "tip": "for 뒤에 기간을 붙여 얼마나 머무는지 말할 수 있어요.",
+    "rows": [
+      {
+        "en": "I'm here on vacation.",
+        "ko": "휴가로 왔어요.",
+        "cue": "What is the purpose of your visit?",
+        "cueKo": "방문 목적이 무엇인가요?",
+        "word": "vacation",
+        "wordKo": "휴가",
+        "extra": "I'd like to do some sightseeing.",
+        "extraKo": "관광을 하려고 해요."
+      },
+      {
+        "en": "I'm staying for five days.",
+        "ko": "5일 동안 머물 거예요.",
+        "cue": "How long are you staying?",
+        "cueKo": "얼마나 머무시나요?",
+        "word": "stay",
+        "wordKo": "머무르다",
+        "extra": "I leave on Friday.",
+        "extraKo": "금요일에 출발해요."
+      },
+      {
+        "en": "I'm staying at a hotel.",
+        "ko": "호텔에 머물 거예요.",
+        "cue": "Where are you staying?",
+        "cueKo": "어디에서 머무시나요?",
+        "word": "accommodation",
+        "wordKo": "숙소",
+        "extra": "Here is the booking confirmation.",
+        "extraKo": "예약 확인서 여기 있어요."
+      },
+      {
+        "en": "Here is my return ticket.",
+        "ko": "귀국 항공권 여기 있어요.",
+        "cue": "Do you have a return ticket?",
+        "cueKo": "귀국 항공권이 있나요?",
+        "word": "return ticket",
+        "wordKo": "왕복·귀국 표",
+        "extra": "My flight is on Friday.",
+        "extraKo": "제 비행기는 금요일이에요."
+      },
+      {
+        "en": "I'm traveling with a friend.",
+        "ko": "친구와 여행하고 있어요.",
+        "cue": "Are you traveling alone?",
+        "cueKo": "혼자 여행하시나요?",
+        "word": "travel alone",
+        "wordKo": "혼자 여행하다",
+        "extra": "We are staying at the same hotel.",
+        "extraKo": "같은 호텔에서 머무를 거예요."
+      }
+    ]
+  },
+  {
+    "title": "기차표 사기",
+    "label": "교통 · 기차",
+    "scene": "역에서 표를 사고 승강장과 출발 시간을 확인해보세요.",
+    "tip": "one-way는 편도, round-trip은 왕복이에요.",
+    "rows": [
+      {
+        "en": "I'd like a ticket to the city center.",
+        "ko": "시내로 가는 표 한 장 주세요.",
+        "cue": "Where are you going?",
+        "cueKo": "어디로 가시나요?",
+        "word": "city center",
+        "wordKo": "시내 중심가",
+        "extra": "For today, please.",
+        "extraKo": "오늘 표로 주세요."
+      },
+      {
+        "en": "One-way, please.",
+        "ko": "편도로 주세요.",
+        "cue": "One-way or round-trip?",
+        "cueKo": "편도인가요, 왕복인가요?",
+        "word": "one-way",
+        "wordKo": "편도",
+        "extra": "I only need one ticket.",
+        "extraKo": "한 장만 필요해요."
+      },
+      {
+        "en": "When is the next train?",
+        "ko": "다음 기차는 언제인가요?",
+        "cue": "This is the ticket counter.",
+        "cueKo": "여기는 매표소입니다.",
+        "word": "next train",
+        "wordKo": "다음 기차",
+        "extra": "I'd like to leave soon.",
+        "extraKo": "곧 출발하고 싶어요."
+      },
+      {
+        "en": "Which platform should I go to?",
+        "ko": "어느 승강장으로 가야 하나요?",
+        "cue": "Here is your ticket.",
+        "cueKo": "표 여기 있습니다.",
+        "word": "platform",
+        "wordKo": "승강장",
+        "extra": "Is it upstairs?",
+        "extraKo": "위층에 있나요?"
+      },
+      {
+        "en": "Do I need to change trains?",
+        "ko": "기차를 갈아타야 하나요?",
+        "cue": "This train goes to the city center.",
+        "cueKo": "이 기차는 시내로 갑니다.",
+        "word": "change trains",
+        "wordKo": "기차를 갈아타다",
+        "extra": "Or is it a direct train?",
+        "extraKo": "아니면 직행인가요?"
+      }
+    ]
+  },
+  {
+    "title": "호텔에 필요한 것 부탁하기",
+    "label": "숙소 · 부탁",
+    "scene": "추가 수건이나 짐 보관이 필요해요. 프런트에 간단하게 요청해보세요.",
+    "tip": "Could you와 Could I로 필요한 도움을 정중하게 요청해요.",
+    "rows": [
+      {
+        "en": "Could I have two more towels?",
+        "ko": "수건 두 장 더 받을 수 있나요?",
+        "cue": "How can I help you?",
+        "cueKo": "무엇을 도와드릴까요?",
+        "word": "towel",
+        "wordKo": "수건",
+        "extra": "One for each person, please.",
+        "extraKo": "한 사람당 한 장씩 부탁드려요."
+      },
+      {
+        "en": "Could you keep my luggage for a few hours?",
+        "ko": "몇 시간 동안 짐을 맡아주시겠어요?",
+        "cue": "Are you going out?",
+        "cueKo": "외출하시나요?",
+        "word": "luggage",
+        "wordKo": "짐",
+        "extra": "I'll come back this afternoon.",
+        "extraKo": "오늘 오후에 돌아올게요."
+      },
+      {
+        "en": "Could you call a taxi for me?",
+        "ko": "택시를 불러주시겠어요?",
+        "cue": "Do you need help with transport?",
+        "cueKo": "교통편에 도움이 필요하세요?",
+        "word": "call a taxi",
+        "wordKo": "택시를 부르다",
+        "extra": "I'd like to leave in ten minutes.",
+        "extraKo": "10분 뒤에 출발하고 싶어요."
+      },
+      {
+        "en": "Is there a laundry room?",
+        "ko": "세탁실이 있나요?",
+        "cue": "Do you have any questions?",
+        "cueKo": "질문이 있으신가요?",
+        "word": "laundry room",
+        "wordKo": "세탁실",
+        "extra": "I'd like to wash some clothes.",
+        "extraKo": "옷을 좀 세탁하고 싶어요."
+      },
+      {
+        "en": "Could I have a late check-out?",
+        "ko": "늦게 체크아웃할 수 있을까요?",
+        "cue": "Your check-out is tomorrow.",
+        "cueKo": "체크아웃은 내일입니다.",
+        "word": "late check-out",
+        "wordKo": "늦은 체크아웃",
+        "extra": "Is there an extra charge?",
+        "extraKo": "추가 요금이 있나요?"
+      }
+    ]
+  },
+  {
+    "title": "카페에서 음료 주문하기",
+    "label": "식사 · 카페",
+    "scene": "여행 중 잠깐 쉬어가요. 원하는 음료와 크기를 말해보세요.",
+    "tip": "to go는 포장, for here는 매장에서 먹는다는 뜻이에요.",
+    "rows": [
+      {
+        "en": "I'd like a latte, please.",
+        "ko": "라테 한 잔 주세요.",
+        "cue": "What can I get for you?",
+        "cueKo": "무엇을 드릴까요?",
+        "word": "latte",
+        "wordKo": "라테",
+        "extra": "A small one, please.",
+        "extraKo": "작은 사이즈로 주세요."
+      },
+      {
+        "en": "Could I have it iced?",
+        "ko": "아이스로 받을 수 있을까요?",
+        "cue": "Hot or iced?",
+        "cueKo": "따뜻하게 드릴까요, 차갑게 드릴까요?",
+        "word": "iced",
+        "wordKo": "얼음을 넣은",
+        "extra": "It's quite warm today.",
+        "extraKo": "오늘 꽤 따뜻하네요."
+      },
+      {
+        "en": "Do you have oat milk?",
+        "ko": "오트밀크가 있나요?",
+        "cue": "What kind of milk would you like?",
+        "cueKo": "어떤 우유로 드릴까요?",
+        "word": "oat milk",
+        "wordKo": "귀리 음료",
+        "extra": "I'd like that instead of regular milk.",
+        "extraKo": "일반 우유 대신 그걸로 주세요."
+      },
+      {
+        "en": "To go, please.",
+        "ko": "포장해 주세요.",
+        "cue": "For here or to go?",
+        "cueKo": "매장에서 드시나요, 포장인가요?",
+        "word": "to go",
+        "wordKo": "포장으로",
+        "extra": "I'm catching a train.",
+        "extraKo": "기차를 타러 가야 해요."
+      },
+      {
+        "en": "Could I have a cup of water too?",
+        "ko": "물 한 잔도 받을 수 있나요?",
+        "cue": "Anything else?",
+        "cueKo": "다른 것은요?",
+        "word": "a cup of water",
+        "wordKo": "물 한 잔",
+        "extra": "That will be all, thank you.",
+        "extraKo": "그게 전부예요, 감사합니다."
+      }
+    ]
+  },
+  {
+    "title": "관광지에서 표 사기",
+    "label": "관광 · 입장",
+    "scene": "박물관이나 전망대를 방문했어요. 입장권과 운영 시간을 물어보세요.",
+    "tip": "How much is로 가격을, What time으로 시간을 물어요.",
+    "rows": [
+      {
+        "en": "Two adult tickets, please.",
+        "ko": "성인 표 두 장 주세요.",
+        "cue": "How many tickets would you like?",
+        "cueKo": "표 몇 장 드릴까요?",
+        "word": "adult ticket",
+        "wordKo": "성인 입장권",
+        "extra": "For today, please.",
+        "extraKo": "오늘 표로 주세요."
+      },
+      {
+        "en": "How much is the entrance fee?",
+        "ko": "입장료는 얼마인가요?",
+        "cue": "Welcome to the museum.",
+        "cueKo": "박물관에 오신 것을 환영합니다.",
+        "word": "entrance fee",
+        "wordKo": "입장료",
+        "extra": "Is the audio guide included?",
+        "extraKo": "오디오 가이드도 포함인가요?"
+      },
+      {
+        "en": "What time do you close?",
+        "ko": "몇 시에 문을 닫나요?",
+        "cue": "Do you need any information?",
+        "cueKo": "필요한 정보가 있나요?",
+        "word": "close",
+        "wordKo": "문을 닫다",
+        "extra": "Do we have enough time to look around?",
+        "extraKo": "둘러볼 시간이 충분할까요?"
+      },
+      {
+        "en": "Can I take photos here?",
+        "ko": "여기서 사진을 찍어도 되나요?",
+        "cue": "Please follow me.",
+        "cueKo": "따라오세요.",
+        "word": "take photos",
+        "wordKo": "사진을 찍다",
+        "extra": "I'll turn off the flash.",
+        "extraKo": "플래시는 끌게요."
+      },
+      {
+        "en": "Is there an audio guide in Korean?",
+        "ko": "한국어 오디오 가이드가 있나요?",
+        "cue": "Would you like an audio guide?",
+        "cueKo": "오디오 가이드가 필요하신가요?",
+        "word": "audio guide",
+        "wordKo": "음성 안내 기기",
+        "extra": "I'd like to borrow one.",
+        "extraKo": "하나 빌리고 싶어요."
+      }
+    ]
+  },
+  {
+    "title": "수하물 찾기",
+    "label": "공항 · 수하물",
+    "scene": "도착한 공항에서 가방을 찾고, 보이지 않으면 안내 데스크에 물어보세요.",
+    "tip": "I can’t find로 찾지 못한 물건을 설명할 수 있어요.",
+    "rows": [
+      {
+        "en": "Where is baggage claim?",
+        "ko": "수하물 찾는 곳은 어디인가요?",
+        "cue": "Do you need directions?",
+        "cueKo": "길 안내가 필요하세요?",
+        "word": "baggage claim",
+        "wordKo": "수하물 찾는 곳",
+        "extra": "I've just arrived.",
+        "extraKo": "방금 도착했어요."
+      },
+      {
+        "en": "Which carousel is for this flight?",
+        "ko": "이 항공편 짐은 어느 벨트에서 나오나요?",
+        "cue": "Can I see your flight number?",
+        "cueKo": "항공편 번호를 볼 수 있을까요?",
+        "word": "carousel",
+        "wordKo": "수하물 회전 벨트",
+        "extra": "Here is my boarding pass.",
+        "extraKo": "탑승권 여기 있어요."
+      },
+      {
+        "en": "I can't find my suitcase.",
+        "ko": "제 여행 가방을 찾을 수 없어요.",
+        "cue": "What seems to be the problem?",
+        "cueKo": "무슨 문제인가요?",
+        "word": "suitcase",
+        "wordKo": "여행 가방",
+        "extra": "I've been waiting here.",
+        "extraKo": "여기서 기다리고 있었어요."
+      },
+      {
+        "en": "It's a large blue suitcase.",
+        "ko": "큰 파란색 여행 가방이에요.",
+        "cue": "What does your bag look like?",
+        "cueKo": "가방이 어떻게 생겼나요?",
+        "word": "large",
+        "wordKo": "큰",
+        "extra": "It has a yellow tag.",
+        "extraKo": "노란색 이름표가 달려 있어요."
+      },
+      {
+        "en": "Where can I report a missing bag?",
+        "ko": "분실한 짐은 어디에 신고하나요?",
+        "cue": "Your bag may be delayed.",
+        "cueKo": "짐이 늦어지고 있을 수 있어요.",
+        "word": "missing bag",
+        "wordKo": "분실한 가방",
+        "extra": "I have my baggage receipt.",
+        "extraKo": "수하물 영수증을 가지고 있어요."
+      }
+    ]
+  },
+  {
+    "title": "버스 타기",
+    "label": "교통 · 버스",
+    "scene": "버스 정류장에서 목적지와 내릴 곳을 확인해보세요.",
+    "tip": "Does this bus go to 뒤에 목적지를 붙여보세요.",
+    "rows": [
+      {
+        "en": "Does this bus go to the museum?",
+        "ko": "이 버스가 박물관에 가나요?",
+        "cue": "Where are you heading?",
+        "cueKo": "어디로 가시나요?",
+        "word": "bus stop",
+        "wordKo": "버스 정류장",
+        "extra": "I'm visiting it today.",
+        "extraKo": "오늘 방문하려고 해요."
+      },
+      {
+        "en": "How much is the fare?",
+        "ko": "요금은 얼마인가요?",
+        "cue": "Please get on.",
+        "cueKo": "타세요.",
+        "word": "fare",
+        "wordKo": "운임",
+        "extra": "Can I pay by card?",
+        "extraKo": "카드로 낼 수 있나요?"
+      },
+      {
+        "en": "Where should I get off?",
+        "ko": "어디에서 내려야 하나요?",
+        "cue": "The museum is on this route.",
+        "cueKo": "박물관은 이 노선에 있어요.",
+        "word": "get off",
+        "wordKo": "내리다",
+        "extra": "Could you tell me the stop name?",
+        "extraKo": "정류장 이름을 알려주시겠어요?"
+      },
+      {
+        "en": "Could you let me know when we get there?",
+        "ko": "도착하면 알려주시겠어요?",
+        "cue": "It is about six stops from here.",
+        "cueKo": "여기서 약 여섯 정거장이에요.",
+        "word": "let me know",
+        "wordKo": "알려주다",
+        "extra": "I'm not familiar with the area.",
+        "extraKo": "이 지역이 익숙하지 않아요."
+      },
+      {
+        "en": "Is this seat taken?",
+        "ko": "이 자리 주인이 있나요?",
+        "cue": "Hello.",
+        "cueKo": "안녕하세요.",
+        "word": "seat",
+        "wordKo": "좌석",
+        "extra": "May I sit here?",
+        "extraKo": "여기 앉아도 될까요?"
+      }
+    ]
+  },
+  {
+    "title": "객실 문제 설명하기",
+    "label": "숙소 · 문제 해결",
+    "scene": "객실에서 불편한 점이 생겼어요. 문제를 설명하고 도움을 요청해보세요.",
+    "tip": "isn’t working은 기기가 작동하지 않을 때 써요.",
+    "rows": [
+      {
+        "en": "My room key isn't working.",
+        "ko": "객실 키가 작동하지 않아요.",
+        "cue": "How can I help you?",
+        "cueKo": "무엇을 도와드릴까요?",
+        "word": "room key",
+        "wordKo": "객실 키",
+        "extra": "Could you check it, please?",
+        "extraKo": "확인해 주시겠어요?"
+      },
+      {
+        "en": "There is no hot water.",
+        "ko": "뜨거운 물이 나오지 않아요.",
+        "cue": "What is wrong with the room?",
+        "cueKo": "객실에 무슨 문제가 있나요?",
+        "word": "hot water",
+        "wordKo": "뜨거운 물",
+        "extra": "Could someone take a look?",
+        "extraKo": "누가 확인해 주실 수 있나요?"
+      },
+      {
+        "en": "The air conditioner isn't working.",
+        "ko": "에어컨이 작동하지 않아요.",
+        "cue": "Is everything okay?",
+        "cueKo": "괜찮으신가요?",
+        "word": "air conditioner",
+        "wordKo": "에어컨",
+        "extra": "The room is very warm.",
+        "extraKo": "객실이 아주 더워요."
+      },
+      {
+        "en": "It's quite noisy in my room.",
+        "ko": "제 객실이 꽤 시끄러워요.",
+        "cue": "Did you sleep well?",
+        "cueKo": "잘 주무셨나요?",
+        "word": "noisy",
+        "wordKo": "시끄러운",
+        "extra": "Could I move to a quieter room?",
+        "extraKo": "더 조용한 방으로 옮길 수 있을까요?"
+      },
+      {
+        "en": "Could someone help me, please?",
+        "ko": "누가 도와주실 수 있나요?",
+        "cue": "Please wait a moment.",
+        "cueKo": "잠시 기다려 주세요.",
+        "word": "a moment",
+        "wordKo": "잠깐",
+        "extra": "I'll wait at the front desk.",
+        "extraKo": "프런트에서 기다릴게요."
+      }
+    ]
+  },
+  {
+    "title": "음식 재료 확인하기",
+    "label": "식사 · 재료와 요청",
+    "scene": "음식에 어떤 재료가 들어가는지 묻고 원하는 조리 방식을 요청해보세요.",
+    "tip": "without 뒤에 빼고 싶은 재료를 말하세요.",
+    "rows": [
+      {
+        "en": "Does this contain nuts?",
+        "ko": "여기에 견과류가 들어가나요?",
+        "cue": "Do you have a question about the menu?",
+        "cueKo": "메뉴에 대해 궁금한 점이 있나요?",
+        "word": "contain",
+        "wordKo": "포함하다",
+        "extra": "Could you check with the kitchen?",
+        "extraKo": "주방에 확인해 주시겠어요?"
+      },
+      {
+        "en": "I'm allergic to peanuts.",
+        "ko": "저는 땅콩 알레르기가 있어요.",
+        "cue": "Do you have any food allergies?",
+        "cueKo": "음식 알레르기가 있으신가요?",
+        "word": "allergic to",
+        "wordKo": "~에 알레르기가 있는",
+        "extra": "Please let the chef know.",
+        "extraKo": "요리사에게 알려주세요."
+      },
+      {
+        "en": "Could I have it without onions?",
+        "ko": "양파를 빼고 받을 수 있나요?",
+        "cue": "Would you like any changes?",
+        "cueKo": "변경하고 싶은 것이 있나요?",
+        "word": "without",
+        "wordKo": "~ 없이",
+        "extra": "Everything else is fine.",
+        "extraKo": "나머지는 괜찮아요."
+      },
+      {
+        "en": "Is this dish spicy?",
+        "ko": "이 음식이 매운가요?",
+        "cue": "This is one of our popular dishes.",
+        "cueKo": "이것은 인기 메뉴 중 하나예요.",
+        "word": "spicy",
+        "wordKo": "매운",
+        "extra": "I'd prefer something mild.",
+        "extraKo": "맵지 않은 것이 좋아요."
+      },
+      {
+        "en": "Do you have a vegetarian option?",
+        "ko": "채식 메뉴가 있나요?",
+        "cue": "What would you like to eat?",
+        "cueKo": "어떤 음식을 드시겠어요?",
+        "word": "vegetarian",
+        "wordKo": "채식의",
+        "extra": "Could you recommend one?",
+        "extraKo": "하나 추천해 주시겠어요?"
+      }
+    ]
+  },
+  {
+    "title": "가게에서 쇼핑하기",
+    "label": "쇼핑 · 물건 고르기",
+    "scene": "마음에 드는 물건을 발견했어요. 가격과 크기를 확인해보세요.",
+    "tip": "Do you have로 다른 색이나 크기가 있는지 물어보세요.",
+    "rows": [
+      {
+        "en": "How much is this?",
+        "ko": "이건 얼마인가요?",
+        "cue": "Can I help you?",
+        "cueKo": "도와드릴까요?",
+        "word": "price",
+        "wordKo": "가격",
+        "extra": "I can't see the price tag.",
+        "extraKo": "가격표가 보이지 않아요."
+      },
+      {
+        "en": "Do you have this in a smaller size?",
+        "ko": "이것보다 작은 사이즈가 있나요?",
+        "cue": "How does it fit?",
+        "cueKo": "크기가 맞나요?",
+        "word": "size",
+        "wordKo": "크기",
+        "extra": "This one is a little big.",
+        "extraKo": "이건 조금 커요."
+      },
+      {
+        "en": "Can I try it on?",
+        "ko": "입어봐도 되나요?",
+        "cue": "Do you like this one?",
+        "cueKo": "이 제품이 마음에 드시나요?",
+        "word": "try on",
+        "wordKo": "입어보다",
+        "extra": "Where is the fitting room?",
+        "extraKo": "탈의실은 어디인가요?"
+      },
+      {
+        "en": "I'm just looking, thank you.",
+        "ko": "그냥 둘러보고 있어요, 감사합니다.",
+        "cue": "Are you looking for anything special?",
+        "cueKo": "특별히 찾으시는 것이 있나요?",
+        "word": "just looking",
+        "wordKo": "그냥 구경하는",
+        "extra": "I'll let you know if I need help.",
+        "extraKo": "도움이 필요하면 말씀드릴게요."
+      },
+      {
+        "en": "I'll take this one.",
+        "ko": "이걸로 살게요.",
+        "cue": "Have you decided?",
+        "cueKo": "결정하셨나요?",
+        "word": "take this one",
+        "wordKo": "이것을 사다",
+        "extra": "Could I have a bag, please?",
+        "extraKo": "봉투도 주시겠어요?"
+      }
+    ]
+  },
+  {
+    "title": "돌아오는 비행기 확인하기",
+    "label": "공항 · 귀국",
+    "scene": "귀국하는 날이에요. 출발 정보와 탑승구를 확인해보세요.",
+    "tip": "has changed는 바뀌었다는 뜻이에요. changed gate는 바뀐 탑승구예요.",
+    "rows": [
+      {
+        "en": "Where is the check-in counter?",
+        "ko": "체크인 카운터는 어디인가요?",
+        "cue": "Do you need some help?",
+        "cueKo": "도움이 필요하세요?",
+        "word": "counter",
+        "wordKo": "카운터",
+        "extra": "I'm flying home today.",
+        "extraKo": "오늘 집으로 돌아가요."
+      },
+      {
+        "en": "Is my flight on time?",
+        "ko": "제 비행기가 정시에 출발하나요?",
+        "cue": "What is your flight number?",
+        "cueKo": "항공편 번호가 무엇인가요?",
+        "word": "on time",
+        "wordKo": "정시에",
+        "extra": "Here is my booking information.",
+        "extraKo": "예약 정보 여기 있어요."
+      },
+      {
+        "en": "Has the gate changed?",
+        "ko": "탑승구가 바뀌었나요?",
+        "cue": "Please check the departure board.",
+        "cueKo": "출발 안내판을 확인하세요.",
+        "word": "gate",
+        "wordKo": "탑승구",
+        "extra": "My boarding pass says gate ten.",
+        "extraKo": "탑승권에는 10번이라고 적혀 있어요."
+      },
+      {
+        "en": "Where is the nearest restroom?",
+        "ko": "가장 가까운 화장실은 어디인가요?",
+        "cue": "Boarding starts soon.",
+        "cueKo": "곧 탑승이 시작됩니다.",
+        "word": "restroom",
+        "wordKo": "화장실",
+        "extra": "I'll be back in a few minutes.",
+        "extraKo": "몇 분 안에 돌아올게요."
+      },
+      {
+        "en": "Is this the line for boarding?",
+        "ko": "여기가 탑승 줄인가요?",
+        "cue": "Hello.",
+        "cueKo": "안녕하세요.",
+        "word": "line",
+        "wordKo": "줄",
+        "extra": "Here is my boarding pass.",
+        "extraKo": "탑승권 여기 있어요."
+      }
+    ]
+  },
+  {
+    "title": "공항으로 이동하기",
+    "label": "교통 · 공항 가기",
+    "scene": "여행을 마치고 공항으로 가요. 터미널과 교통편을 확인하세요.",
+    "tip": "terminal은 공항의 여객 터미널이에요.",
+    "rows": [
+      {
+        "en": "What is the best way to get to the airport?",
+        "ko": "공항에 가려면 어떻게 가는 게 좋나요?",
+        "cue": "Where are you going today?",
+        "cueKo": "오늘 어디로 가시나요?",
+        "word": "airport",
+        "wordKo": "공항",
+        "extra": "I have two bags with me.",
+        "extraKo": "가방이 두 개 있어요."
+      },
+      {
+        "en": "Is there an airport shuttle?",
+        "ko": "공항 셔틀이 있나요?",
+        "cue": "Do you need a ride?",
+        "cueKo": "이동편이 필요하세요?",
+        "word": "shuttle",
+        "wordKo": "셔틀",
+        "extra": "Where does it leave from?",
+        "extraKo": "어디서 출발하나요?"
+      },
+      {
+        "en": "How often does it run?",
+        "ko": "얼마나 자주 운행하나요?",
+        "cue": "The shuttle stops outside.",
+        "cueKo": "셔틀은 밖에 정차해요.",
+        "word": "how often",
+        "wordKo": "얼마나 자주",
+        "extra": "When is the next one?",
+        "extraKo": "다음 편은 언제인가요?"
+      },
+      {
+        "en": "I need to go to terminal two.",
+        "ko": "2터미널로 가야 해요.",
+        "cue": "Which terminal do you need?",
+        "cueKo": "어느 터미널로 가시나요?",
+        "word": "terminal",
+        "wordKo": "터미널",
+        "extra": "Does this shuttle stop there?",
+        "extraKo": "이 셔틀이 거기에 정차하나요?"
+      },
+      {
+        "en": "Could you help me with this bag?",
+        "ko": "이 가방 좀 도와주시겠어요?",
+        "cue": "You can put your bags here.",
+        "cueKo": "가방은 여기에 두시면 돼요.",
+        "word": "help with",
+        "wordKo": "~을 돕다",
+        "extra": "It's a little heavy.",
+        "extraKo": "조금 무거워요."
+      }
+    ]
+  },
+  {
+    "title": "호텔에서 체크아웃하기",
+    "label": "숙소 · 체크아웃",
+    "scene": "체크아웃하면서 청구 내역을 확인하고 짐을 맡겨보세요.",
+    "tip": "Could you explain으로 이해되지 않는 항목의 설명을 부탁할 수 있어요.",
+    "rows": [
+      {
+        "en": "I'd like to check out, please.",
+        "ko": "체크아웃하고 싶어요.",
+        "cue": "Good morning. How can I help?",
+        "cueKo": "좋은 아침입니다. 무엇을 도와드릴까요?",
+        "word": "check out",
+        "wordKo": "체크아웃하다",
+        "extra": "Here is my room key.",
+        "extraKo": "객실 키 여기 있어요."
+      },
+      {
+        "en": "Could I see the bill?",
+        "ko": "청구서를 볼 수 있나요?",
+        "cue": "Your total is on this screen.",
+        "cueKo": "총액이 이 화면에 나와 있어요.",
+        "word": "total",
+        "wordKo": "총액",
+        "extra": "I'd like to check the details.",
+        "extraKo": "세부 내역을 확인하고 싶어요."
+      },
+      {
+        "en": "What is this charge for?",
+        "ko": "이 요금은 무엇인가요?",
+        "cue": "Here is the bill.",
+        "cueKo": "청구서 여기 있습니다.",
+        "word": "charge",
+        "wordKo": "요금",
+        "extra": "Could you explain it, please?",
+        "extraKo": "설명해 주시겠어요?"
+      },
+      {
+        "en": "Could you email me the receipt?",
+        "ko": "영수증을 이메일로 보내주시겠어요?",
+        "cue": "Would you like a receipt?",
+        "cueKo": "영수증이 필요하신가요?",
+        "word": "receipt",
+        "wordKo": "영수증",
+        "extra": "I'll write down my email address.",
+        "extraKo": "이메일 주소를 적어드릴게요."
+      },
+      {
+        "en": "Can I leave my bags here until three?",
+        "ko": "3시까지 여기에 짐을 맡겨도 되나요?",
+        "cue": "Are you leaving now?",
+        "cueKo": "지금 떠나시나요?",
+        "word": "until",
+        "wordKo": "~까지",
+        "extra": "I'll pick them up this afternoon.",
+        "extraKo": "오늘 오후에 찾으러 올게요."
+      }
+    ]
+  },
+  {
+    "title": "포장 주문하기",
+    "label": "식사 · 포장",
+    "scene": "간단한 식사를 포장해서 가져가려고 해요. 수량과 필요한 물건을 말해보세요.",
+    "tip": "another는 하나 더라는 뜻이에요.",
+    "rows": [
+      {
+        "en": "I'd like two sandwiches, please.",
+        "ko": "샌드위치 두 개 주세요.",
+        "cue": "What would you like to order?",
+        "cueKo": "무엇을 주문하시겠어요?",
+        "word": "sandwich",
+        "wordKo": "샌드위치",
+        "extra": "One chicken and one cheese.",
+        "extraKo": "치킨 하나와 치즈 하나요."
+      },
+      {
+        "en": "Can I get this to go?",
+        "ko": "이거 포장할 수 있나요?",
+        "cue": "Will you be eating here?",
+        "cueKo": "여기서 드실 건가요?",
+        "word": "to go",
+        "wordKo": "포장으로",
+        "extra": "I'm going to the park.",
+        "extraKo": "공원에 갈 거예요."
+      },
+      {
+        "en": "Could I have some napkins?",
+        "ko": "냅킨 좀 주시겠어요?",
+        "cue": "Here is your order.",
+        "cueKo": "주문하신 음식입니다.",
+        "word": "napkin",
+        "wordKo": "냅킨",
+        "extra": "And a fork, please.",
+        "extraKo": "그리고 포크도 주세요."
+      },
+      {
+        "en": "How long is the wait?",
+        "ko": "얼마나 기다려야 하나요?",
+        "cue": "We are preparing your food.",
+        "cueKo": "음식을 준비하고 있어요.",
+        "word": "wait",
+        "wordKo": "기다림",
+        "extra": "I have a train to catch.",
+        "extraKo": "타야 할 기차가 있어요."
+      },
+      {
+        "en": "I ordered two, but there is only one.",
+        "ko": "두 개 주문했는데 하나만 있어요.",
+        "cue": "Is everything okay with your order?",
+        "cueKo": "주문하신 음식에 문제없으신가요?",
+        "word": "only",
+        "wordKo": "오직, 겨우",
+        "extra": "Could you check, please?",
+        "extraKo": "확인해 주시겠어요?"
+      }
+    ]
+  },
+  {
+    "title": "잃어버린 물건 찾기",
+    "label": "도움 · 분실물",
+    "scene": "지갑이나 휴대전화를 놓고 온 것 같아요. 물건의 특징과 마지막 장소를 말해보세요.",
+    "tip": "I think I left로 물건을 두고 온 것 같다고 말할 수 있어요.",
+    "rows": [
+      {
+        "en": "I think I left my phone here.",
+        "ko": "여기에 휴대전화를 두고 간 것 같아요.",
+        "cue": "How can I help you?",
+        "cueKo": "무엇을 도와드릴까요?",
+        "word": "leave behind",
+        "wordKo": "두고 가다",
+        "extra": "I was here this morning.",
+        "extraKo": "오늘 아침에 여기 있었어요."
+      },
+      {
+        "en": "Has anyone found a black wallet?",
+        "ko": "검은색 지갑을 찾은 분이 있나요?",
+        "cue": "What did you lose?",
+        "cueKo": "무엇을 잃어버리셨나요?",
+        "word": "wallet",
+        "wordKo": "지갑",
+        "extra": "I last saw it near the entrance.",
+        "extraKo": "마지막으로 입구 근처에서 봤어요."
+      },
+      {
+        "en": "Where is the lost and found?",
+        "ko": "분실물 보관소는 어디인가요?",
+        "cue": "Someone may have handed it in.",
+        "cueKo": "누군가 맡겼을 수도 있어요.",
+        "word": "lost and found",
+        "wordKo": "분실물 보관소",
+        "extra": "I'd like to ask there.",
+        "extraKo": "거기서 물어보고 싶어요."
+      },
+      {
+        "en": "It has a blue case.",
+        "ko": "파란색 케이스가 있어요.",
+        "cue": "Can you describe your phone?",
+        "cueKo": "휴대전화를 설명해 주시겠어요?",
+        "word": "case",
+        "wordKo": "케이스",
+        "extra": "There is a small sticker on the back.",
+        "extraKo": "뒤에 작은 스티커가 있어요."
+      },
+      {
+        "en": "Thank you for your help.",
+        "ko": "도와주셔서 감사합니다.",
+        "cue": "We will let you know if we find it.",
+        "cueKo": "찾으면 알려드리겠습니다.",
+        "word": "find",
+        "wordKo": "찾다",
+        "extra": "How can I contact you later?",
+        "extraKo": "나중에 어떻게 연락드릴 수 있나요?"
+      }
+    ]
+  }
+]
