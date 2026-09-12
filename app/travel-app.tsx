@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { lessons as beginnerLessons, stages as beginnerStages } from "./lessons";
 import { workLessons, workStages } from "./work-lessons";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { normalizeSentence, useSpeech } from "./use-speech";
 import InstallApp from "./install-app";
 import Wordbook from "./wordbook";
@@ -17,7 +18,7 @@ import Pronunciation from "./pronunciation";
 import StudyGuide from "./study-guide";
 import DancingChick from "./dancing-chick";
 import WeekdayMascot from "./weekday-mascot";
-import { lessonDay, lessonLevel, weeklyIdentity, type Curriculum, type CourseAdvance, type CourseSelection } from "./weekly-types";
+import { lessonDay, lessonLevel, scheduledDay, weekDate, calendarDateKey, addCalendarDays, isStudyDate, isStudyWeekend, dateForLesson, formatStudyDate, MIN_STUDY_DATE, MAX_STUDY_DATE, type Curriculum, type CourseAdvance } from "./weekly-types";
 import { learnerFetch } from "./learner-fetch";
 
 type RecordRow = { lessonId: number; stageId: number; completedAt: string };
@@ -27,6 +28,9 @@ const dayNumber = lessonDay;
 type Level = "work" | "basics";
 const originalLessons = [...workLessons, ...beginnerLessons];
 const speechLines = (text: string, index?: number) => (text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text]).map(line => ({text:line.trim(),index}));
+const calendarLesson = (course:Curriculum,level:Level) => course[level].lessons[scheduledDay(weekDate(course.selectedDate))-1] || course[level].lessons[0];
+const resumeStage = (rows:RecordRow[],id:number) => Math.max(0,beginnerStages.findIndex((_,index)=>!rows.some(row=>row.lessonId===id && row.stageId===index)));
+const mergeCalendar = (previous:Curriculum|null,next:Curriculum):Curriculum => ({...next,archiveLessons:[...next.archiveLessons,...(previous?.archiveLessons||[]),...(previous?.work.lessons||[]),...(previous?.basics.lessons||[])].filter((lesson,index,all)=>all.findIndex(item=>item.id===lesson.id)===index)});
 
 export default function TravelApp() {
   const [tab, setTab] = useState("today");
@@ -56,7 +60,6 @@ export default function TravelApp() {
   const [saveError, setSaveError] = useState("");
   const [loadError, setLoadError] = useState("");
   const [notice, setNotice] = useState("");
-  const [date, setDate] = useState("");
   const [entry, setEntry] = useState("");
   const [feedback, setFeedback] = useState<{correct:boolean; text:string} | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -67,6 +70,11 @@ export default function TravelApp() {
   const [timerOn, setTimerOn] = useState(false);
   const speech = useSpeech(Number(rate));
   const interaction = useRef(false);
+  const selectedDateRef = useRef("");
+  const navigationBusy = useRef(false);
+  const openDateRef = useRef<(date:string)=>Promise<void>>(async()=>{});
+  const calendarView = useRef({today:"",selectedDate:"",busy:true});
+  calendarView.current={today:curriculum?.today||"",selectedDate:curriculum?.selectedDate||"",busy:loading||saving||changingWeek||!!advance};
   const lesson = allLessons.find(l => l.id === day) || lessons[0];
   const phrase = lesson.phrases[card];
   const targetAnswer = level === "work" && stage === 4 && phrase.variation ? phrase.en.replace(phrase.variation.from, phrase.variation.to) : phrase.en;
@@ -82,20 +90,20 @@ export default function TravelApp() {
   const load = useCallback(async (resume = false) => {
     setLoading(true); setLoadError("");
     try {
-      const [response,courseResponse] = await Promise.all([learnerFetch("/api/progress", {cache:"no-store"}),learnerFetch("/api/curriculum",{cache:"no-store"})]);
+      const requestedDate=resume?"":selectedDateRef.current;
+      const [response,courseResponse] = await Promise.all([learnerFetch("/api/progress", {cache:"no-store"}),learnerFetch(`/api/curriculum${requestedDate?`?date=${requestedDate}`:""}`,{cache:"no-store"})]);
       const data = await response.json() as {progress:RecordRow[];browserScoped?:boolean;error?:string};
       if (!response.ok || !Array.isArray(data.progress)) throw new Error(data.error || "학습 기록을 불러오지 못했어요.");
       const courses=await courseResponse.json() as Curriculum;
-      if(!courseResponse.ok || !Array.isArray(courses.work?.lessons) || !Array.isArray(courses.basics?.lessons))throw new Error("이번 주 학습 자료를 불러오지 못했어요. 다시 시도해 주세요.");
+      if(!courseResponse.ok || !Array.isArray(courses.work?.lessons) || !Array.isArray(courses.basics?.lessons) || !isStudyDate(courses.selectedDate))throw new Error("학습 자료를 불러오지 못했어요. 다시 시도해 주세요.");
       const nextCurriculum=courses as Curriculum;
-      setCurriculum(previous=>({...nextCurriculum,archiveLessons:[...nextCurriculum.archiveLessons,...(previous?.archiveLessons||[]),...(previous?.work.lessons||[]),...(previous?.basics.lessons||[])].filter((l,i,a)=>a.findIndex(x=>x.id===l.id)===i)}));
+      setCurriculum(previous=>mergeCalendar(previous,nextCurriculum));
+      selectedDateRef.current=nextCurriculum.selectedDate;
       const rows = data.progress as RecordRow[]; setRecords(rows);
       setBrowserScoped(data.browserScoped === true);
       if (resume && !interaction.current) {
-        const course = nextCurriculum[levelRef.current].lessons;
-        const next = course.find(item => rows.filter(row => row.lessonId === item.id).length < 6) || course[0];
-        const nextStage = beginnerStages.findIndex((_, index) => !rows.some(r => r.lessonId === next.id && r.stageId === index));
-        setDay(next.id); setStage(nextStage < 0 ? 0 : nextStage);
+        const next = calendarLesson(nextCurriculum,levelRef.current);
+        setDay(next.id); setStage(resumeStage(rows,next.id));
       }
     } catch (error) { setLoadError(error instanceof Error ? error.message : "학습 기록을 불러오지 못했어요. 다시 시도해 주세요."); }
     finally { setLoading(false); }
@@ -109,7 +117,6 @@ export default function TravelApp() {
   }, []);
 
   useEffect(() => {
-    setDate(new Intl.DateTimeFormat("ko-KR", {timeZone:"Asia/Seoul",month:"long", day:"numeric", weekday:"long"}).format(new Date()));
     try {
       const prefs = JSON.parse(localStorage.getItem("travel-ui") || "{}");
       if (prefs.level === "basics" || prefs.level === "work") { levelRef.current = prefs.level; setLevel(prefs.level); setDay(prefs.level === "work" ? 11 : 1); }
@@ -120,40 +127,47 @@ export default function TravelApp() {
     void load(true);
   }, [load]);
 
-  const openCourse = (course: CourseSelection) => {
-    setCurriculum(previous => previous ? {
-      ...previous,
-      [course.level]: course.pack,
-      weeks: {...previous.weeks,[course.level]:course.weekNumber},
-      archiveLessons: [...previous.archiveLessons,...previous[course.level].lessons].filter((lesson,index,all) => all.findIndex(item => item.id === lesson.id) === index),
-    } : previous);
-    setLevel(course.level); levelRef.current = course.level;
-    const next = course.pack.lessons.find(item => records.filter(row => row.lessonId === item.id).length < 6) || course.pack.lessons[0];
-    const nextStage = beginnerStages.findIndex((_,index) => !records.some(row => row.lessonId === next.id && row.stageId === index));
-    setDay(next.id); setStage(nextStage < 0 ? 0 : nextStage); setCard(0); setTab("today");
-    setEntry(""); setFeedback(null); setChosen(null); setRevealed(false); setQuestionShown(false);
-    setAnswered([]); setSeconds(0); setTimerOn(false); setWordNotice(""); setWeekError(""); setSaveError("");
-    setNotice(`${course.weekNumber}주차를 열었어요.`);
+  const navigateDate = async (targetDate:string,targetLevel:Level=levelRef.current) => {
+    if(saving || loading || navigationBusy.current || !isStudyDate(targetDate))return;
+    navigationBusy.current=true;
+    speech.stop(); setTimerOn(false); setChangingWeek(true); setWeekError("");
+    try {
+      const response=await learnerFetch(`/api/curriculum?date=${targetDate}`,{cache:"no-store"});
+      const data=await response.json() as Curriculum & {error?:string};
+      if(!response.ok || !data.work?.lessons?.length || !data.basics?.lessons?.length || data.selectedDate!==targetDate)throw new Error(data.error || "선택한 날짜의 학습을 열지 못했어요.");
+      setCurriculum(previous=>mergeCalendar(previous,data)); selectedDateRef.current=data.selectedDate;
+      const next=calendarLesson(data,targetLevel);
+      setLevel(targetLevel);levelRef.current=targetLevel;preference("level",targetLevel);
+      setDay(next.id); setStage(resumeStage(records,next.id)); setCard(0); setTab("today");
+      setEntry(""); setFeedback(null); setChosen(null); setRevealed(false); setQuestionShown(false);
+      setAnswered([]); setSeconds(0); setTimerOn(false); setWordNotice(""); setSaveError(""); setNotice("");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }catch(error){setWeekError(error instanceof Error?error.message:"선택한 날짜의 학습을 열지 못했어요.");}
+    finally {navigationBusy.current=false;setChangingWeek(false);}
   };
+  openDateRef.current=navigateDate;
 
   useEffect(() => {
     if (!advance) return;
-    const timer = setTimeout(() => { openCourse(advance); setAdvance(null); }, 4500);
+    const timer = setTimeout(() => { setAdvance(null); void openDateRef.current(advance.pack.weekStart); }, 4500);
     return () => clearTimeout(timer);
   }, [advance]);
 
-  const moveWeek = async (direction: -1 | 1) => {
-    if (!curriculum || saving || changingWeek || advance) return;
-    const week = curriculum.weeks[level] + direction;
-    if (week < 1 || week > 3801) return;
-    speech.stop(); setTimerOn(false); setChangingWeek(true); setWeekError("");
-    try {
-      const response = await learnerFetch("/api/course", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({level,week})});
-      const data = await response.json() as CourseSelection & {error?:string};
-      if (!response.ok || !data.pack?.lessons?.length) throw new Error(data.error || "주차를 열지 못했어요. 다시 시도해 주세요.");
-      openCourse(data); window.scrollTo({top:0,behavior:"smooth"});
-    } catch (error) { setWeekError(error instanceof Error ? error.message : "주차를 열지 못했어요."); }
-    finally { setChangingWeek(false); }
+  useEffect(()=>{
+    const checkDate=()=>{
+      const view=calendarView.current,nextToday=calendarDateKey();
+      if(document.hidden || !view.today || view.busy || nextToday===view.today || !isStudyDate(nextToday))return;
+      if(view.selectedDate===view.today)void openDateRef.current(nextToday);
+      else setCurriculum(previous=>previous?{...previous,today:nextToday}:previous);
+    };
+    const timer=setInterval(checkDate,60000);
+    window.addEventListener("focus",checkDate); document.addEventListener("visibilitychange",checkDate);
+    return ()=>{clearInterval(timer);window.removeEventListener("focus",checkDate);document.removeEventListener("visibilitychange",checkDate);};
+  },[]);
+
+  const moveWeek = (direction: -1 | 1) => {
+    if (!curriculum || saving || changingWeek || loading || advance) return;
+    void navigateDate(addCalendarDays(curriculum.selectedDate,direction*7));
   };
 
   const preference = (key: string, value: string | boolean) => {
@@ -182,17 +196,24 @@ export default function TravelApp() {
     interaction.current = true; speech.stop(); setStage(index); setCard(0); setAnswered([]); setSeconds(0); setTimerOn(false); setNotice(""); resetExercise();
   };
   const chooseDay = (id: number) => {
-    if (saving || changingWeek || advance) return;
-    interaction.current = true; speech.stop(); setDay(id);
-    const nextLevel: Level = lessonLevel(id); setLevel(nextLevel); levelRef.current = nextLevel; preference("level", nextLevel);
+    if (saving || changingWeek || loading || advance) return;
+    interaction.current = true; speech.stop();
+    const nextLevel: Level = lessonLevel(id);
+    const targetDate=dateForLesson(id);
+    if(targetDate && curriculum && !curriculum[nextLevel].lessons.some(item=>item.id===id)){void navigateDate(targetDate,nextLevel);return;}
+    setLevel(nextLevel);levelRef.current=nextLevel;preference("level",nextLevel);
+    if(targetDate){selectedDateRef.current=targetDate;setCurriculum(previous=>previous?{...previous,selectedDate:targetDate}:previous);}
+    setDay(id);
     const next = stages.findIndex((_, i) => !records.some(r => r.lessonId === id && r.stageId === i));
     changeStage(next < 0 ? 0 : next); setTab("today"); window.scrollTo({top:0,behavior:"smooth"});
   };
   const changeLevel = (value: string) => {
     if (saving || changingWeek || advance || (value !== "work" && value !== "basics")) return;
-    const course = curriculum?.[value].lessons || (value === "work" ? workLessons : beginnerLessons);
-    const next = course.find(item => records.filter(row => row.lessonId === item.id).length < 6) || course[0];
+    if(!curriculum)return;
+    const next=calendarLesson(curriculum,value);
+    const selectedDate=curriculum.selectedDate;
     chooseDay(next.id);
+    selectedDateRef.current=selectedDate;setCurriculum(previous=>previous?{...previous,selectedDate}:previous);
   };
   const changeTab = (value: string) => { if (advance || changingWeek) return; interaction.current = true; speech.stop(); setTimerOn(false); setTab(value); };
   const practicePronunciation = (text: string) => { setPronunciationText(text); changeTab("pronunciation"); window.scrollTo({top:0,behavior:"smooth"}); };
@@ -240,7 +261,7 @@ export default function TravelApp() {
       const data = await response.json() as {progress:RecordRow;advance?:CourseAdvance|null;error?:string};
       if (!response.ok || !data.progress) throw new Error(data.error || "기록을 저장하지 못했어요. 다시 시도해 주세요.");
       setRecords(prev => [...prev.filter(r => !(r.lessonId === day && r.stageId === stage)),data.progress]);
-      setNotice(done.length + (isStageDone ? 0 : 1) === 6 ? "오늘 수업의 6단계를 모두 마쳤어요. 수고하셨어요!" : "학습 완료를 저장했어요. 준비되면 다음 단계로 넘어가세요.");
+      setNotice(done.length + (isStageDone ? 0 : 1) === 6 ? `${dateForLesson(day)?formatStudyDate(dateForLesson(day)!):"선택한 날짜"} 수업의 6단계를 모두 마쳤어요. 수고하셨어요!` : "학습 완료를 저장했어요. 준비되면 다음 단계로 넘어가세요.");
       if (data.advance && data.advance.weekNumber > (curriculum?.weeks[data.advance.level] || 1)) {
         setAdvance(data.advance);
         window.scrollTo({top:0,behavior:"smooth"});
@@ -256,40 +277,56 @@ export default function TravelApp() {
   const activeDateCount = new Set(records.map(r => new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Seoul"}).format(new Date(r.completedAt)))).size;
   const exerciseReady = stage >= 3 ? answered.length === 5 : true;
 
-  if(!curriculum)return <div className="app-shell"><div className="empty-state">{loadError?<><BookOpen size={36}/><h2>이번 주 학습을 열지 못했어요.</h2><p>{loadError}</p><button className="primary-button" onClick={()=>void load(true)}>다시 불러오기</button></>:<><Loader2 className="spin" size={36}/><h2>이번 주 학습을 준비하고 있어요.</h2></>}</div></div>;
-  const weeklyBanner=<section className="weekly-banner" aria-label="주간 학습 안내"><div><strong>{curriculum.weeks[level]}주차 · {curriculum[level].title}</strong><p>완료 여부와 상관없이 다음 주차도 자유롭게 열 수 있어요.</p>{tab==="today" && day>=100000 && weeklyIdentity(day)?.weekStart!==curriculum[level].weekStart && <p>이전 주차를 복습하고 있어요. 현재 주차는 ‘이번 주 5일 보기’에서 열 수 있어요.</p>}<small>회화 25개 · 단어·표현 10개</small></div><div className="week-navigation"><button className="text-button" disabled={curriculum.weeks[level]<=1 || changingWeek || saving || !!advance} onClick={()=>void moveWeek(-1)}><ArrowLeft size={16}/>이전 주</button><button className="secondary-button" disabled={changingWeek || saving || !!advance || curriculum.weeks[level]>=3801} onClick={()=>void moveWeek(1)}>{changingWeek?<Loader2 className="spin" size={16}/>:<ArrowRight size={16}/>}다음 주 학습</button></div></section>;
+  if(!curriculum)return <div className="app-shell"><div className="empty-state">{loadError?<><BookOpen size={36}/><h2>오늘 학습을 열지 못했어요.</h2><p>{loadError}</p><button className="primary-button" onClick={()=>void load(true)}>다시 불러오기</button></>:<><Loader2 className="spin" size={36}/><h2>오늘 학습을 준비하고 있어요.</h2></>}</div></div>;
+  const navigationDisabled=loading || saving || changingWeek || !!advance;
+  const weekStart=curriculum[level].weekStart;
+  const dateRange=`${formatStudyDate(weekStart)}–${formatStudyDate(addCalendarDays(weekStart,4))}`;
+  const lessonDateLabel=formatStudyDate(dateForLesson(day)||curriculum.selectedDate);
+  const weekend=isStudyWeekend(curriculum.selectedDate);
+  const studyTitle=weekend?"주말 복습":curriculum.selectedDate===curriculum.today?"오늘의 회화":`${lessonDateLabel} 회화`;
+  const weeklyBanner=<section className="weekly-banner" aria-label="선택한 날짜의 학습 자료"><div><strong>{dateRange}</strong><p>{curriculum[level].title}</p></div><small>회화 25개 · 단어·표현 10개</small></section>;
 
   return <div className="app-shell">
     <a className="skip-link" href="#study-main">학습으로 바로 가기</a>
     <header className="topbar">
-      <button className="brand" onClick={() => changeTab("today")} aria-label="트래블 잉글리시 오늘의 학습"><span className="brand-icon"><Compass aria-hidden="true" size={27}/></span><span>travel<span className="brand-dot">.</span><small>트래블 잉글리시</small></span></button>
-      <div className="top-meta"><span className="top-date">{date}</span><button className="secondary-button guide-trigger" onClick={()=>changeTab("help")} aria-pressed={tab==="help"}><CircleHelp size={18}/>사용법</button><InstallApp browserScoped={browserScoped}/></div>
+      <button className="brand" disabled={navigationDisabled} onClick={() => void navigateDate(curriculum.today)} aria-label="트래블 잉글리시 오늘의 학습"><span className="brand-icon"><Compass aria-hidden="true" size={27}/></span><span>travel<span className="brand-dot">.</span><small>트래블 잉글리시</small></span></button>
+      <div className="top-meta"><span className="top-date">{formatStudyDate(curriculum.today,{month:"long",day:"numeric",weekday:"long"})}</span><button className="secondary-button guide-trigger" onClick={()=>changeTab("help")} aria-pressed={tab==="help"}><CircleHelp size={18}/>사용법</button><InstallApp browserScoped={browserScoped}/></div>
     </header>
     {weekError && <div className="status-banner error" role="alert">{weekError}</div>}
-    {advance && <section className="week-celebration" role="status" aria-live="polite"><div className="week-celebration-friends" aria-hidden="true">{[1,2,3,4,5].map(friend => <WeekdayMascot key={friend} day={friend} completed/>)}</div><strong>{advance.completedWeek}주차 완주!</strong><p>다섯 친구가 모두 모였어요. {advance.weekNumber}주차로 출발합니다.</p></section>}
-    <nav className="lesson-days" aria-label={`${curriculum.weeks[level]}주차 요일별 학습`}>
+    {advance && <section className="week-celebration" role="status" aria-live="polite"><div className="week-celebration-friends" aria-hidden="true">{[1,2,3,4,5].map(friend => <WeekdayMascot key={friend} day={friend} completed/>)}</div><strong>다섯 날짜의 학습 완료!</strong><p>{formatStudyDate(advance.pack.weekStart)} 수업으로 이어갈게요.</p></section>}
+    <section className="study-calendar" aria-label="학습 날짜 선택">
+      <div className="calendar-summary"><strong>{formatStudyDate(weekStart,{year:"numeric",month:"long"})}</strong><span>{dateRange}</span></div>
+      <div className="calendar-controls">
+        <button type="button" className="icon-button" disabled={navigationDisabled || !isStudyDate(addCalendarDays(curriculum.selectedDate,-7))} onClick={()=>moveWeek(-1)} aria-label="이전 주 날짜 보기" title="이전 주"><ArrowLeft size={18}/></button>
+        <label htmlFor="study-date" className="sr-only">학습할 날짜</label><Input id="study-date" className="study-date-input" type="date" min={MIN_STUDY_DATE} max={MAX_STUDY_DATE} value={curriculum.selectedDate} disabled={navigationDisabled} onChange={event=>{if(isStudyDate(event.target.value))void navigateDate(event.target.value);}}/>
+        <button type="button" className="icon-button" disabled={navigationDisabled || !isStudyDate(addCalendarDays(curriculum.selectedDate,7))} onClick={()=>moveWeek(1)} aria-label="다음 주 날짜 보기" title="다음 주"><ArrowRight size={18}/></button>
+        <button type="button" className="secondary-button today-button" disabled={navigationDisabled || (curriculum.selectedDate===curriculum.today && tab==="today")} onClick={()=>void navigateDate(curriculum.today)}>{changingWeek?<Loader2 className="spin" size={16}/>:"오늘"}</button>
+      </div>
+    </section>
+    <nav className="lesson-days" aria-label={`${dateRange} 날짜별 학습`}>
       {curriculum[level].lessons.map((item,index)=>{
         const completed=Array.from({length:6},(_,stageId)=>stageId).every(stageId=>records.some(r=>r.lessonId===item.id && r.stageId===stageId));
         const selected=tab==="today" && day===item.id;
-        return <button key={item.id} type="button" disabled={saving || changingWeek || !!advance} className={completed ? "day-completed" : ""} onClick={()=>chooseDay(item.id)} aria-pressed={selected} aria-label={`${["월","화","수","목","금"][index]}요일 ${index+1}일차, ${item.title}${completed?", 학습 완료":""}`}>
+        const itemDate=dateForLesson(item.id)||addCalendarDays(weekStart,index),isToday=itemDate===curriculum.today;
+        return <button key={item.id} type="button" disabled={navigationDisabled} className={`${completed?"day-completed":""} ${isToday?"day-today":""}`} onClick={()=>chooseDay(item.id)} aria-pressed={selected} aria-current={isToday?"date":undefined} aria-label={`${formatStudyDate(itemDate,{month:"long",day:"numeric",weekday:"long"})}, ${item.title}${isToday?", 오늘":""}${completed?", 학습 완료":""}`}>
           <span className="weekday-label">{["월","화","수","목","금"][index]}요일</span>
           <WeekdayMascot day={index+1} completed={completed} className="weekday-friend"/>
-          <strong>{index+1}일차</strong><small>{completed?<><Check size={13}/>완료</>:selected?"학습 중":"시작하기"}</small>
+          <strong>{Number(itemDate.slice(5,7))}.{Number(itemDate.slice(8,10))}</strong><small>{completed?<><Check size={13}/>완료</>:isToday?"오늘":selected?"학습 중":"시작하기"}</small>
         </button>;
       })}
     </nav>
     <Tabs value={tab} onValueChange={changeTab} orientation={wideLayout ? "vertical" : "horizontal"} className={`workspace-tabs tab-${tab}`}>
-      <div className="nav-bar"><TabsList className="main-tabs" variant="line" aria-label="학습 메뉴"><TabsTrigger value="today"><Compass/>오늘 회화</TabsTrigger><TabsTrigger value="course"><BookOpen/>이번 주 학습</TabsTrigger><TabsTrigger value="words"><Bookmark/>단어장</TabsTrigger><TabsTrigger value="pronunciation"><Mic/>발음 연습</TabsTrigger><TabsTrigger value="history"><CalendarDays/>학습 기록</TabsTrigger><TabsTrigger value="help"><CircleHelp/>사용법</TabsTrigger></TabsList><span className="commute-label"><Plane size={16}/> 여행 영어 · 하루 한 상황</span></div>
+      <div className="nav-bar"><TabsList className="main-tabs" variant="line" aria-label="학습 메뉴"><TabsTrigger value="today"><Compass/>오늘 회화</TabsTrigger><TabsTrigger value="course"><BookOpen/>학습 달력</TabsTrigger><TabsTrigger value="words"><Bookmark/>단어장</TabsTrigger><TabsTrigger value="pronunciation"><Mic/>발음 연습</TabsTrigger><TabsTrigger value="history"><CalendarDays/>학습 기록</TabsTrigger><TabsTrigger value="help"><CircleHelp/>사용법</TabsTrigger></TabsList><span className="commute-label"><Plane size={16}/> 여행 영어 · 하루 한 상황</span></div>
 
-      <div className="level-bar"><div><span className="level-label">학습 난도</span><Select value={level} onValueChange={changeLevel} disabled={saving}><SelectTrigger className="level-select" aria-label="영어 학습 난도 선택"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="work">여행 실전 · 두세 문장으로 답하기</SelectItem><SelectItem value="basics">여행 기초 · 짧은 표현부터</SelectItem></SelectContent></Select></div><p>{level === "work" ? "짧은 문장을 연결해 이유를 설명하고, 요청하고, 다시 질문해보세요." : "공항·호텔·식당에서 바로 쓸 표현부터 연습하세요."}</p></div>
-      <TabsContent value="today" id="study-main">{weeklyBanner}
-        <div className="page-heading today-heading"><div className="today-intro"><DancingChick key={day} day={dayNumber(day)}/><div><p className="eyebrow">READY FOR YOUR NEXT TRIP</p><h1>오늘의 회화</h1><p className="heading-sub">{level === "work" ? "상황을 듣고, 내 말로 답해보세요." : "짧은 문장부터 차근차근 연습해보세요."}</p></div></div><div className="today-progress"><span className="progress-kicker">DAY {number(dayNumber(day))}</span><strong>{loading || loadError ? "—" : done.length}<span> / 6</span></strong><span>이번 수업 완료 단계</span><Progress value={done.length/6*100} aria-label="이번 수업 완료 단계"/></div></div>
+      <div className="level-bar"><div><span className="level-label">학습 난도</span><Select value={level} onValueChange={changeLevel} disabled={navigationDisabled}><SelectTrigger className="level-select" aria-label="영어 학습 난도 선택"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="work">여행 실전 · 두세 문장으로 답하기</SelectItem><SelectItem value="basics">여행 기초 · 짧은 표현부터</SelectItem></SelectContent></Select></div><p>{level === "work" ? "짧은 문장을 연결해 이유를 설명하고, 요청하고, 다시 질문해보세요." : "공항·호텔·식당에서 바로 쓸 표현부터 연습하세요."}</p></div>
+      <TabsContent value="today" id="study-main">
+        <div className="page-heading today-heading"><div className="today-intro"><DancingChick key={day} day={dayNumber(day)}/><div><p className="eyebrow">READY FOR YOUR NEXT TRIP</p><h1>{studyTitle}</h1><p className="heading-sub">{weekend?`${lessonDateLabel} 수업부터 다시 연습해요. 다른 날짜도 골라보세요.`:level === "work" ? "상황을 듣고, 내 말로 답해보세요." : "짧은 문장부터 차근차근 연습해보세요."}</p></div></div><div className="today-progress"><span className="progress-kicker">{lessonDateLabel}</span><strong>{loading || loadError ? "—" : done.length}<span> / 6</span></strong><span>이번 수업 완료 단계</span><Progress value={done.length/6*100} aria-label="이번 수업 완료 단계"/></div></div>
         <div className="study-toolbar"><div className="study-focus"><span className="focus-icon"><Headphones size={19}/></span><div><strong>지금은, {stages[stage].title}</strong><span>한 단계 권장 10분 · 표현 5개</span></div></div><div className="quiet-control"><label htmlFor="quiet-mode">입력으로 연습</label><Switch id="quiet-mode" checked={quiet} onCheckedChange={v=>preference("quiet",v)}/></div></div>
         {loadError && <div className="status-banner error" role="alert"><span>{loadError} 학습은 계속할 수 있어요.</span><button onClick={()=>void load(false)}>다시 불러오기</button></div>}
         <div className="learning-grid">
           <div className="learning-column">
             <section className="lesson-panel" aria-labelledby="lesson-title">
-              <div className="lesson-top"><span className="day-label">DAY {number(dayNumber(day))}</span><span>{lesson.label}</span><span className="lesson-length">{level === "work" ? "응답 연습 5개" : "핵심 표현 5개"}</span></div>
+              <div className="lesson-top"><span className="day-label">{lessonDateLabel}</span><span>{lesson.label}</span><span className="lesson-length">{level === "work" ? "응답 연습 5개" : "핵심 표현 5개"}</span></div>
               <h2 id="lesson-title">{lesson.title}</h2><p className="scene">{lesson.scene}</p>
               <div className="lesson-track" aria-label="학습 단계 선택">{stages.map((s,i)=><button key={s.title} disabled={saving} className={`${stage===i ? "active" : ""} ${done.includes(i) ? "complete" : ""}`} aria-current={stage===i ? "step" : undefined} aria-label={`${i+1}단계 ${s.title}${done.includes(i) ? ", 완료" : ""}`} onClick={()=>changeStage(i)}><span>{done.includes(i)?<Check size={14}/>:number(i+1)}</span><span>{s.title}</span></button>)}</div>
               <div className="stage-top"><div className="stage-name"><StageIcon size={20}/><h3>{stages[stage].title}</h3><span>{number(stage+1)} / 06</span></div><div className="audio-settings"><Select value={rate} onValueChange={v=>preference("rate",v)}><SelectTrigger aria-label="영어 재생 속도" className="speed-select"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="0.7">0.7× 아주 천천히</SelectItem><SelectItem value="0.85">0.85× 천천히</SelectItem><SelectItem value="1">1× 보통 속도</SelectItem></SelectContent></Select><label className="translation-control" htmlFor="translation-toggle">뜻 보기<Switch id="translation-toggle" checked={translation} onCheckedChange={v=>preference("translation",v)}/></label></div></div>
@@ -320,7 +357,7 @@ export default function TravelApp() {
               </div>
               {speech.message && <div className="audio-message" role="status"><Volume2 size={17}/><span>{speech.message}</span></div>}
               {speech.speaking && <button className="stop-audio" onClick={speech.stop}><Square size={14}/> 모든 음성 멈추기</button>}
-              <div className="stage-footer"><span>{stage>=3 ? `${answered.length}/5개 연습 완료` : "충분히 연습했다면 완료를 눌러주세요."}</span>{isStageDone ? <button className="primary-button" onClick={()=>stage<5 ? changeStage(stage+1) : changeTab("course")}>{stage<5 ? "다음 단계" : "코스 보기"}<ArrowRight size={17}/></button> : <button className="primary-button" disabled={saving || !exerciseReady} onClick={()=>void saveStage()}>{saving ? <Loader2 className="spin" size={17}/> : <Check size={18}/>} {saving ? "저장 중" : "이 단계 완료"}</button>}</div>
+              <div className="stage-footer"><span>{stage>=3 ? `${answered.length}/5개 연습 완료` : "충분히 연습했다면 완료를 눌러주세요."}</span>{isStageDone ? <button className="primary-button" onClick={()=>stage<5 ? changeStage(stage+1) : changeTab("course")}>{stage<5 ? "다음 단계" : "학습 달력"}<ArrowRight size={17}/></button> : <button className="primary-button" disabled={saving || !exerciseReady} onClick={()=>void saveStage()}>{saving ? <Loader2 className="spin" size={17}/> : <Check size={18}/>} {saving ? "저장 중" : "이 단계 완료"}</button>}</div>
               {isStageDone && <p className="saved-label"><CheckCircle2 size={15}/> 완료한 단계예요. 언제든 다시 연습할 수 있어요.</p>}
               {notice && <div className="status-banner success" role="status">{notice}</div>}{saveError && <div className="status-banner error" role="alert">{saveError}<button onClick={()=>void saveStage()} disabled={saving}>다시 저장</button></div>}
             </section>
@@ -334,15 +371,15 @@ export default function TravelApp() {
         </div>
       </TabsContent>
 
-      <TabsContent value="course">{weeklyBanner}<div className="page-heading"><div><p className="eyebrow">FIVE TRAVEL MOMENTS, EVERY WEEK</p><h1>{level === "work" ? "여행 실전 · 이번 주 5일" : "여행 기초 · 이번 주 5일"}</h1><p className="heading-sub">{level === "work" ? "주문하고, 요청하고, 다시 확인하는 여행 회화." : "하루에 한 주제씩. 필요한 상황부터 골라도 좋아요."}</p></div><span className="course-count">{completedDays}<span> / {lessons.length}일 완료</span></span></div>
-        <div className="course-grid">{lessons.map(l=>{const count=records.filter(r=>r.lessonId===l.id).length; return <button className={`course-card ${l.id===day ? "selected" : ""}`} key={l.id} onClick={()=>chooseDay(l.id)}><div className="course-card-top"><span>DAY {number(dayNumber(l.id))}</span>{count===6 ? <span className="course-status"><CheckCircle2 size={16}/>완료</span> : count>0 ? <span className="course-status">학습 중 · {count}/6</span> : <span>{l.label}</span>}</div><h2>{l.title}</h2><p lang="en">{l.phrases[0].en}</p><div className="course-card-bottom"><span>{level === "work" ? "5개 응답 · 6단계" : "5개 표현 · 6단계"}</span><ChevronRight size={20}/></div></button>;})}</div>
+      <TabsContent value="course">{weeklyBanner}<div className="page-heading"><div><p className="eyebrow">A LITTLE ENGLISH, EVERY DAY</p><h1>날짜별 학습</h1><p className="heading-sub">지난 날짜는 복습하고, 다음 날짜는 미리 연습해보세요.</p></div><span className="course-count">{completedDays}<span> / {lessons.length}일 완료</span></span></div>
+        <div className="course-grid">{lessons.map(l=>{const count=records.filter(r=>r.lessonId===l.id).length; return <button className={`course-card ${l.id===day ? "selected" : ""}`} disabled={navigationDisabled} key={l.id} onClick={()=>chooseDay(l.id)}><div className="course-card-top"><span>{formatStudyDate(dateForLesson(l.id)||weekStart,{month:"long",day:"numeric",weekday:"short"})}</span>{count===6 ? <span className="course-status"><CheckCircle2 size={16}/>완료</span> : count>0 ? <span className="course-status">학습 중 · {count}/6</span> : <span>{l.label}</span>}</div><h2>{l.title}</h2><p lang="en">{l.phrases[0].en}</p><div className="course-card-bottom"><span>{level === "work" ? "5개 응답 · 6단계" : "5개 표현 · 6단계"}</span><ChevronRight size={20}/></div></button>;})}</div>
       </TabsContent>
       <TabsContent value="words">{weeklyBanner}<Wordbook book={book} rate={Number(rate)} onPractice={practicePronunciation}/></TabsContent>
       <TabsContent value="pronunciation"><Pronunciation initialText={pronunciationText} rate={Number(rate)}/></TabsContent>
       <TabsContent value="history"><div className="page-heading"><div><p className="eyebrow">SMALL STEPS ADD UP</p><h1>학습 기록</h1><p className="heading-sub">{browserScoped ? "이 브라우저에서 학습한 수업을 다시 만나보세요." : "완료한 수업을 확인하고 복습해보세요."}</p></div></div>
-        <div className="history-stats"><div><CalendarDays/><strong>{activeDateCount}<small>일</small></strong><span>완료 기록이 있는 날</span></div><div><BookOpen/><strong>{allCompletedDays}<small>개</small></strong><span>누적 완료 수업 · 지난주 포함</span></div><div><CheckCircle2/><strong>{records.length}<small>단계</small></strong><span>완료한 학습</span></div></div>
+        <div className="history-stats"><div><CalendarDays/><strong>{activeDateCount}<small>일</small></strong><span>완료 기록이 있는 날</span></div><div><BookOpen/><strong>{allCompletedDays}<small>개</small></strong><span>누적 완료 수업</span></div><div><CheckCircle2/><strong>{records.length}<small>단계</small></strong><span>완료한 학습</span></div></div>
         {loadError && <div className="status-banner error" role="alert">{loadError}<button onClick={()=>void load(false)}>다시 불러오기</button></div>}
-        {loading ? <div className="empty-state"><Loader2 className="spin"/><h2>학습 기록을 불러오고 있어요.</h2></div> : records.length===0 ? <div className="empty-state"><DancingChick variant="empty"/><h2>첫 한 걸음을 기다리고 있어요.</h2><p>학습을 마치고 ‘이 단계 완료’를 누르면 기록이 남아요.</p><button className="primary-button" onClick={()=>changeTab("today")}>오늘의 회화 시작하기<ArrowRight size={18}/></button></div> : <div className="history-list">{allLessons.filter(l=>records.some(r=>r.lessonId===l.id)).map(l=>{const rows=records.filter(r=>r.lessonId===l.id);return <button key={l.id} onClick={()=>chooseDay(l.id)}><span className="history-day">{rows.length===6?<WeekdayMascot day={dayNumber(l.id)} completed/>:number(dayNumber(l.id))}</span><div><h2>{l.title}</h2><p>{lessonLevel(l.id) === "work" ? "여행 실전" : "여행 기초"} · {new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric"}).format(new Date(rows[0].completedAt))} · {rows.length}/6단계 완료</p></div><ChevronRight size={20}/></button>;})}</div>}
+        {loading ? <div className="empty-state"><Loader2 className="spin"/><h2>학습 기록을 불러오고 있어요.</h2></div> : records.length===0 ? <div className="empty-state"><DancingChick variant="empty"/><h2>첫 한 걸음을 기다리고 있어요.</h2><p>학습을 마치고 ‘이 단계 완료’를 누르면 기록이 남아요.</p><button className="primary-button" onClick={()=>changeTab("today")}>오늘의 회화 시작하기<ArrowRight size={18}/></button></div> : <div className="history-list">{allLessons.filter(l=>records.some(r=>r.lessonId===l.id)).map(l=>{const rows=records.filter(r=>r.lessonId===l.id);return <button key={l.id} onClick={()=>chooseDay(l.id)}><span className="history-day">{rows.length===6?<WeekdayMascot day={dayNumber(l.id)} completed/>:number(dayNumber(l.id))}</span><div><h2>{l.title}</h2><p>{lessonLevel(l.id) === "work" ? "여행 실전" : "여행 기초"} · {dateForLesson(l.id)?`${formatStudyDate(dateForLesson(l.id)!)} 수업`:new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric"}).format(new Date(rows[0].completedAt))} · {rows.length}/6단계 완료</p></div><ChevronRight size={20}/></button>;})}</div>}
       </TabsContent>
       <TabsContent value="help"><StudyGuide onStudy={()=>changeTab("today")}/></TabsContent>
     </Tabs>

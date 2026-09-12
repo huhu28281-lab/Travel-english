@@ -23,8 +23,9 @@ export async function selectCourse(db:D1Database,userId:string,level:StudyLevel,
 export async function advanceCompletedCourse(db:D1Database,userId:string,level:StudyLevel,weekIndex:number) {
   const first=100000+weekIndex*100+(level==="work"?10:0)+1;
   // Advance once only; duplicate saves and a concurrent tab cannot skip a week.
-  await db.prepare("UPDATE study_path SET week_index=week_index+1,updated_at=? WHERE user_id=? AND level=? AND week_index=? AND week_index<3800 AND (SELECT COUNT(*) FROM study_progress WHERE user_id=? AND lesson_id BETWEEN ? AND ? AND stage_id BETWEEN 0 AND 5)=30").bind(new Date().toISOString(),userId,level,weekIndex,userId,first,first+4).run();
-  return activeCourse(db,userId,level);
+  const result=await db.prepare("UPDATE study_path SET week_index=week_index+1,updated_at=? WHERE user_id=? AND level=? AND week_index=? AND week_index<3800 AND (SELECT COUNT(*) FROM study_progress WHERE user_id=? AND lesson_id BETWEEN ? AND ? AND stage_id BETWEEN 0 AND 5)=30").bind(new Date().toISOString(),userId,level,weekIndex,userId,first,first+4).run();
+  if(result.meta.changes!==1)return null;
+  return {pack:await coursePack(db,weekIndex+1,level),weekIndex:weekIndex+1,weekNumber:weekIndex+2};
 }
 
 export async function availableLesson(db:D1Database,id:number) {

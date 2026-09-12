@@ -2,7 +2,7 @@ import type { Lesson } from "./lessons";
 import type { Word } from "./vocabulary-data";
 export type StudyLevel = "work" | "basics";
 export type WeeklyPack = {weekStart:string;nextUpdateAt:string;level:StudyLevel;source:"ai"|"prepared";title:string;lessons:Lesson[];words:Word[]};
-export type Curriculum = {work:WeeklyPack;basics:WeeklyPack;archiveLessons:Lesson[];weeks:{work:number;basics:number}};
+export type Curriculum = {work:WeeklyPack;basics:WeeklyPack;archiveLessons:Lesson[];weeks:{work:number;basics:number};selectedDate:string;today:string};
 export type CourseSelection = {level:StudyLevel;weekNumber:number;pack:WeeklyPack};
 export type CourseAdvance = CourseSelection & {completedWeek:number};
 const DAY=86400000, WEEK=7*DAY, OFFSET=9*3600000;
@@ -37,4 +37,29 @@ export function scheduledDay(now=new Date()) {
 }
 export function lessonDate(weekStart:string,day:number) {
   return new Date(weekDate(weekStart).getTime()+(day-1)*DAY);
+}
+
+export function calendarDateKey(now=new Date()) {
+  return new Date(now.getTime()+OFFSET).toISOString().slice(0,10);
+}
+export function addCalendarDays(date:string,days:number) {
+  return calendarDateKey(new Date(weekDate(date).getTime()+days*DAY));
+}
+export const MIN_STUDY_DATE=courseWeekStart(0);
+export const MAX_STUDY_DATE=addCalendarDays(courseWeekStart(3800),6);
+export function isStudyDate(value:unknown):value is string {
+  if(typeof value!=="string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+  const parsed=weekDate(value);
+  return Number.isFinite(parsed.getTime()) && calendarDateKey(parsed)===value && value>=MIN_STUDY_DATE && value<=MAX_STUDY_DATE;
+}
+export function isStudyWeekend(date:string) {
+  const day=new Date(`${date}T00:00:00Z`).getUTCDay();
+  return day===0 || day===6;
+}
+export function dateForLesson(id:number) {
+  const identity=weeklyIdentity(id);
+  return identity?addCalendarDays(identity.weekStart,lessonDay(id)-1):null;
+}
+export function formatStudyDate(date:string,options:Intl.DateTimeFormatOptions={month:"long",day:"numeric"}) {
+  return new Intl.DateTimeFormat("ko-KR",{...options,timeZone:"Asia/Seoul"}).format(weekDate(date));
 }

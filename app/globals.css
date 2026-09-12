@@ -786,6 +786,24 @@ body {background:#f4f7fc;color:#162b52;}
 .week-celebration>strong {display:block;font-size:24px;font-weight:800;margin:5px 0 7px;}
 .week-celebration p {font-size:15px;line-height:1.7;}
 .history-day .weekday-mascot {width:52px;height:52px;}
+.study-calendar {display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:24px;padding:16px 18px;background:#fff;border:1px solid #d7e3fb;border-radius:18px;}
+.calendar-summary {display:flex;flex-direction:column;gap:4px;min-width:0;}
+.calendar-summary strong {font-size:18px;color:#173c8c;}
+.calendar-summary>span {font-size:14px;color:#617086;}
+.calendar-controls {display:flex;align-items:center;gap:8px;}
+.calendar-controls .icon-button {width:40px;height:40px;flex-shrink:0;border:1px solid #d7e3fb;background:#f6f9ff;color:#173c8c;}
+.calendar-controls .study-date-input {width:166px;min-width:0;height:42px;font-size:16px;color:#173c8c;background:#fff;border:1px solid #cad7ee;border-radius:10px;}
+.calendar-controls .today-button {min-width:58px;min-height:42px;padding:8px 12px;font-size:14px;justify-content:center;}
+.lesson-days .day-today:not([aria-pressed=true]) {border-color:#2152c7;box-shadow:0 0 0 1px #2152c7;}
+.study-calendar+.lesson-days {margin-top:12px;}
+@media(max-width:700px) {
+  .study-calendar {align-items:stretch;flex-direction:column;gap:12px;padding:14px;}
+  .calendar-summary {flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .calendar-controls {width:100%;gap:6px;}
+  .calendar-controls .study-date-input {flex:1;width:0;}
+  .calendar-controls .icon-button {width:36px;}
+  .calendar-controls .today-button {min-width:52px;padding:8px;}
+}
 @media(max-width:640px) {
   .week-navigation {width:100%;justify-content:space-between;gap:14px;}
   .weekly-banner .week-navigation button {width:auto;}
