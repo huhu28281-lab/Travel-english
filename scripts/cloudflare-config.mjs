@@ -2,7 +2,9 @@ import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const checkOnly=process.argv.includes("--check");
-const databaseId=checkOnly?"00000000-0000-4000-8000-000000000000":process.env.CF_D1_DATABASE_ID?.trim();
+// This database identifier is public configuration, not an API credential.
+const travelDatabaseId="76b85945-6d97-4c23-9939-41c2a5e630f9";
+const databaseId=checkOnly?"00000000-0000-4000-8000-000000000000":(process.env.CF_D1_DATABASE_ID?.trim() || travelDatabaseId);
 if(!databaseId || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(databaseId) || (!checkOnly && databaseId.startsWith("00000000")))throw new Error("여행 영어 전용 D1 데이터베이스 ID(CF_D1_DATABASE_ID)를 설정해 주세요.");
 
 const config={
